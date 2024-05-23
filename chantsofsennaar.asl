@@ -37,9 +37,11 @@ init
         vars.Helper["gameSave3PlaceId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x30, "currentPlaceId", "id");
         vars.Helper["gameSave3PortalId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x30, "currentPortalId");
 
-        vars.Helper["playerControllerPtr"] = mono.Make<ulong>("GameController", "staticInstance", "playerController");
         vars.Helper["isPlayerMoving"] = mono.Make<bool>("GameController", "staticInstance", "playerController", "playerMove", "isMoving");
         vars.Helper["canPlayerRun"] = mono.Make<bool>("GameController", "staticInstance", "playerController", "playerMove", "canRun");
+
+        vars.Helper["inventoryState"] = mono.Make<int>("GameController", "staticInstance", "inventory", "state");
+        vars.Helper["isInventoryNeedOpen"] = mono.Make<bool>("GameController", "staticInstance", "inventory", "needOpen");
 
         return true;
     });
@@ -49,6 +51,12 @@ init
 
     // Gets whether the player went from the title screen to the first cutscene.
     vars.isTitleScreenToNewSave = false;
+
+    // Gets whether the inventory *needs* to be forced open.
+    vars.isInventoryForcedOpenNeeded = false;
+
+    // Gets whether the inventory is *actually* forced open.
+    vars.isInventoryForcedOpen = false;
 }
 
 update
@@ -61,7 +69,6 @@ update
         vars.currentLevelId = current.gameSave1LevelId;
         vars.currentPlaceId = current.gameSave1PlaceId;
         vars.currentPortalId = current.gameSave1PortalId;
-        return true;
     }
     else if (!settings["save_slot_1"] && settings["save_slot_2"] && !settings["save_slot_3"])
     {
@@ -70,7 +77,6 @@ update
         vars.currentLevelId = current.gameSave2LevelId;
         vars.currentPlaceId = current.gameSave2PlaceId;
         vars.currentPortalId = current.gameSave2PortalId;
-        return true;
     }
     else if (!settings["save_slot_1"] && !settings["save_slot_2"] && settings["save_slot_3"])
     {
@@ -79,11 +85,38 @@ update
         vars.currentLevelId = current.gameSave3LevelId;
         vars.currentPlaceId = current.gameSave3PlaceId;
         vars.currentPortalId = current.gameSave3PortalId;
-        return true;
+    }
+    else
+    {
+        // If setting config is invalid, don't run autosplitter.
+        return false;
     }
 
-    // If setting config is invalid, don't run autosplitter.
-    return false;
+    /* The next section checks if inventory needs to be forced open, so we can split when the inventory is actually open. */
+
+    var isInventoryStateOpen = current.inventoryState == 5;
+
+    // Check if inventory was forced open.
+    if (vars.isInventoryForcedOpen)
+    {
+        // Value should only be true for one tick so we split once.
+        vars.isInventoryForcedOpen = false;
+    }
+    // Check if inventory needs to be forced open and is finally open.
+    else if (vars.isInventoryForcedOpenNeeded && isInventoryStateOpen)
+    {
+        print("Inventory is forced open.");
+        vars.isInventoryForcedOpen = true;
+        vars.isInventoryForcedOpenNeeded = false;
+
+        return;
+    }
+    // Check if inventory needs to be forced open.
+    else if (!old.isInventoryNeedOpen && current.isInventoryNeedOpen)
+    {
+        print("Inventory needs to be forced open.");
+        vars.isInventoryForcedOpenNeeded = true;
+    }
 }
 
 reset
@@ -97,6 +130,8 @@ onReset
     // Reset vars.
     vars.lastDateTimeOnTitleScreen = null;
     vars.isTitleScreenToNewSave = false;
+    vars.isInventoryForcedOpenNeeded = false;
+    vars.isInventoryForcedOpen = false;
 }
 
 start
@@ -139,6 +174,8 @@ onStart
     // Reset vars.
     vars.lastDateTimeOnTitleScreen = null;
     vars.isTitleScreenToNewSave = false;
+    vars.isInventoryForcedOpenNeeded = false;
+    vars.isInventoryForcedOpen = false;
 }
 
 split
@@ -147,6 +184,11 @@ split
     // if (vars.currentPlaceId != vars.oldPlaceId)
     // {
     //     print("level + place ids: " + vars.oldLevelId + "," + vars.oldPlaceId + " -> " + vars.currentLevelId + "," + vars.currentPlaceId);
+    //     return true;
+    // }
+
+    // if (vars.isInventoryForcedOpen)
+    // {
     //     return true;
     // }
     /* ---- Testing logic above ---- */
