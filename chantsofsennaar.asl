@@ -36,7 +36,7 @@ startup
     settings.CurrentDefaultParent = "fortress_splits";
     settings.Add("stealth_start_split", true, "Start stealth section");
     settings.Add("stealth_corridor_split", true, "Exit stealth corridor");
-    settings.Add("stealth_box_elevator_split", true, "Exit stealth reserve room");
+    settings.Add("stealth_box_elevator_split", true, "Exit stealth box elevator room");  // TODO: Better name?
     settings.Add("dress_up_split", true, "Exit armory room");
 
     // Settings for Gardens (Bards) level splits
@@ -44,7 +44,7 @@ startup
     settings.Add("gardens_splits", true, "Gardens (Bards) splits");
 
     settings.CurrentDefaultParent = "gardens_splits";
-    settings.Add("servant_door_split", true, "Exit servant door");
+    settings.Add("servant_door_split", true, "Exit through servant door");
     settings.Add("enter_sewers_split", true, "Enter sewers");
     settings.Add("exit_sewers_split", true, "Exit sewers");
     settings.Add("pick_up_windmill_torch_split", true, "Pick up torch item");
