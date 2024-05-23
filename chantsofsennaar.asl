@@ -15,47 +15,31 @@ state("Chants Of Sennaar", "v.1.0.0.9")
     bool isPlayerMoving :            "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28, 0xA0, 0x58, 0xC6;        // GameController > playerController > playerMove > isMoving
 }
 
-init
+startup
 {
-    // This is the last DateTime that we were on the title screen.
-    vars.lastDateTimeOnTitleScreen = null;
+    settings.Add("game_save_slot", true, "[Required] Game save slot for speedruns");
+    settings.CurrentDefaultParent = "game_save_slot";
+    settings.Add("save_slot_1", false, "Use save slot 1");
+    settings.Add("save_slot_2", false, "Use save slot 2");
+    settings.Add("save_slot_3", true, "Use save slot 3");
 
-    // This is set to true if we go from the title screen to the cutscene for the first room in a new save.
-    vars.isTitleScreenToNewSave = false;
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+    vars.Helper.GameName = "Chants of Sennaar";
+    vars.Helper.LoadSceneManager = true;
 }
 
+// This block only runs if the timer is not running.
 start
 {
-    // If we are on title screen now, store current time and exit early.
-    // print("lastDateTimeOnTitleScreen: " + vars.lastDateTimeOnTitleScreen + ", isTitleScreenToNewSave: " + vars.isTitleScreenToNewSave);
-    if (current.currentPlacePtr == current.titleScreenPtr)
-    {
-        vars.lastDateTimeOnTitleScreen = DateTime.Now;
-        vars.isTitleScreenToNewSave = false;
-        return false;
-    }
-
-    // This will be true if script is started while we are not on the title screen.
-    if (vars.lastDateTimeOnTitleScreen == null)
-    {
-        return false;
-    }
-
-    // If we moved from the title screen to a new save, start timer when player starts moving.
-    if (vars.isTitleScreenToNewSave)
-    {
-        return current.isPlayerMoving;
-    }
-
-    // Otherwise, check if we moved from the title screen to the first room in a cutscene (with cursorOff), with some leniency.
     var inFirstRoom = current.levelId == 0 && current.placeId == 0;
-    var isNoLongerOnTitleScreen = DateTime.Now.Subtract(vars.lastDateTimeOnTitleScreen).TotalSeconds > 1;  // Leniency needed when resetting back to title screen.
-    var isNewSave = current.portalId == 0;  // This will be 0 from a new save, and 1 otherwise (e.g. go into next room and back, then save)
-    if (inFirstRoom && isNoLongerOnTitleScreen && isNewSave)
-    {
-        print("Moved from title screen to first room");
-        vars.isTitleScreenToNewSave = true;
-    }
+    var isNewSave = current.portalId == 0;  // This will be 0 from a new save, and 1 otherwise (e.g. going into next room and back, then save)
+    return inFirstRoom && isNewSave && current.isPlayerMoving;
+}
+
+// This block only runs if the timer is running or paused.
+reset
+{
+    return current.currentPlacePtr == current.titleScreenPtr;
 }
 
 split
@@ -88,18 +72,4 @@ split
     if (current.levelId > old.levelId) {
         return true;
     }
-}
-
-onStart
-{
-    // Reset vars.
-    vars.lastDateTimeOnTitleScreen = null;
-    vars.isTitleScreenToNewSave = false;
-}
-
-onReset
-{
-    // Reset vars.
-    vars.lastDateTimeOnTitleScreen = null;
-    vars.isTitleScreenToNewSave = false;
 }
