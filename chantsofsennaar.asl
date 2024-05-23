@@ -332,7 +332,7 @@ split
         // Pick up torch item at windmill.
         var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["pick_up_windmill_torch_split"];
 
-        return isServantDoorSplit || isPickUpHammerSplit || isPickUpCompassSplit || isPickUpWindmillTorchSplit;
+        return isPickUpHammerSplit || isPickUpCompassSplit || isPickUpWindmillTorchSplit;
     }
 
     if (vars.oldLevelId == 3 && vars.newLevelId == 3 && vars.oldPlaceId == 7 && vars.newPlaceId == 8 && settings["gardens_splits"] && settings["maze_solved_split"]) {return true;}
