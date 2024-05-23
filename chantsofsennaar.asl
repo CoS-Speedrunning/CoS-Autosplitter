@@ -41,7 +41,7 @@ startup
     settings.CurrentDefaultParent = "fortress_splits";
     settings.Add("stealth_start_split", true, "Start stealth section");
     settings.Add("stealth_corridor_split", true, "Exit stealth corridor");
-    settings.Add("stealth_box_elevator_split", true, "Exit stealth reserve room");
+    settings.Add("stealth_box_elevator_split", true, "Exit stealth storage room (with elevator)");
     settings.Add("dress_up_split", true, "Exit armory room");
     settings.Add("fortress_exit_split", true, "Leave Warrior area");
 
