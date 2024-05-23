@@ -12,6 +12,15 @@ startup
     settings.Add("save_slot_2", false, "Save slot 2");
     settings.Add("save_slot_3", true, "Save slot 3");
 
+    settings.CurrentDefaultParent = null;
+    settings.Add("abbey_splits", true, "Abbey splits");
+
+    settings.CurrentDefaultParent = "abbey_splits";
+    settings.Add("crypt_split", true, "Crypt");
+    settings.Add("hide_and_seek_split", true, "Hide and seek");
+    settings.Add("bed_puzzle_split", true, "Bed puzzle");
+    settings.Add("lens_split", true, "Lens");
+
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Chants of Sennaar";
 }
@@ -56,6 +65,7 @@ init
     vars.isInventoryForcedOpenNeeded = false;
 
     // Gets whether the inventory is *actually* forced open.
+    // The split block should check this variable to see if an item is picked up.
     vars.isInventoryForcedOpen = false;
 }
 
@@ -181,29 +191,58 @@ onStart
 split
 {
     /* ---- Testing logic below ---- */
-    // if (vars.currentPlaceId != vars.oldPlaceId)
-    // {
-    //     print("level + place ids: " + vars.oldLevelId + "," + vars.oldPlaceId + " -> " + vars.currentLevelId + "," + vars.currentPlaceId);
-    //     return true;
-    // }
-
-    // if (vars.isInventoryForcedOpen)
-    // {
-    //     return true;
-    // }
+    if (vars.currentPlaceId != vars.oldPlaceId)
+    {
+        print("level + place ids: " + vars.oldLevelId + "," + vars.oldPlaceId + " -> " + vars.currentLevelId + "," + vars.currentPlaceId);
+        // return true;
+    }
     /* ---- Testing logic above ---- */
 
+    /* ---- Real logic below ---- */
     /* This only works for Any% category. */
 
-    /* ---- Real logic below ---- */
-    // Split for player starting final cutscene in final room in Exile.
-    if (vars.currentLevelId == 4 && vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff)
+    // Crypt + Abbey splits
+    if (vars.oldLevelId == 0)
     {
-        return true;
+        // Abbey -> Fortress.
+        if (vars.currentLevelId == 1 && settings["abbey_splits"])
+        {
+            return true;
+        }
+
+        // Exit early if current level is not Crypt + Abbey to avoid duplicate check.
+        if (vars.currentLevelId != 0)
+        {
+            return false;
+        }
+
+        // Crypt -> Abbey.
+        if (vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["crypt_split"])
+        {
+            return true;
+        }
+
+        // Finish hide and seek.
+        if (vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["hide_and_seek_split"])
+        {
+            return true;
+        }
+
+        // Finish bed puzzle by picking up coin item.
+        if (vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["bed_puzzle_split"])
+        {
+            return true;
+        }
+
+        // Pick up lens item.
+        if (vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["lens_split"])
+        {
+            return true;
+        }
     }
 
-    // Split for Crypt -> Abbey
-    if (vars.oldLevelId == 0 && vars.oldPlaceId == 6 && vars.currentLevelId == 0 && vars.currentPlaceId == 7)
+    // Split for player starting final cutscene in final room in Exile.
+    if (vars.currentLevelId == 4 && vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff)
     {
         return true;
     }
