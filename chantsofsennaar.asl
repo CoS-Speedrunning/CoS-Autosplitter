@@ -99,11 +99,11 @@ update
     else
     {
         // If setting config is invalid, don't run autosplitter.
+        print("Save slot config is invalid, autosplitter will not run.")
         return false;
     }
 
     /* The next section checks if inventory needs to be forced open, so we can split when the inventory is actually open. */
-
     var isInventoryStateOpen = current.inventoryState == 5;
 
     // Check if inventory was forced open.
@@ -115,7 +115,6 @@ update
     // Check if inventory needs to be forced open and is finally open.
     else if (vars.isInventoryForcedOpenNeeded && isInventoryStateOpen)
     {
-        print("Inventory is forced open.");
         vars.isInventoryForcedOpen = true;
         vars.isInventoryForcedOpenNeeded = false;
 
@@ -124,7 +123,6 @@ update
     // Check if inventory needs to be forced open.
     else if (!old.isInventoryNeedOpen && current.isInventoryNeedOpen)
     {
-        print("Inventory needs to be forced open.");
         vars.isInventoryForcedOpenNeeded = true;
     }
 }
@@ -174,7 +172,6 @@ start
     var inCutscene = current.cursorOff;  // Cursor is off during a cutscene, even when using controller.
     if (isFreshFirstRoom && isNoLongerOnTitleScreen && inCutscene)
     {
-        print("Moved from title screen to first room");
         vars.isTitleScreenToNewSave = true;
     }
 }
@@ -217,28 +214,15 @@ split
         }
 
         // Crypt -> Abbey.
-        if (vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["crypt_split"])
-        {
-            return true;
-        }
-
+        var isCryptSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["crypt_split"];
         // Finish hide and seek.
-        if (vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["hide_and_seek_split"])
-        {
-            return true;
-        }
-
+        var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["hide_and_seek_split"];
         // Finish bed puzzle by picking up coin item.
-        if (vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["bed_puzzle_split"])
-        {
-            return true;
-        }
-
+        var isBedPuzzleSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["bed_puzzle_split"];
         // Pick up lens item.
-        if (vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["lens_split"])
-        {
-            return true;
-        }
+        var isLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["lens_split"];
+
+        return isCryptSplit || isHideAndSeekSplit || isBedPuzzleSplit || isLensSplit;
     }
 
     // Split for player starting final cutscene in final room in Exile.
