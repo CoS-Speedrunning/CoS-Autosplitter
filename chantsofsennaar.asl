@@ -195,6 +195,7 @@ onReset
     vars.isTitleScreenToNewSave = false;
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
+    print("testtesttest");
 }
 
 start
@@ -222,13 +223,15 @@ start
     }
 
     // Otherwise, check if player moved from title screen to first room's intro cutscene.
-    var isFreshFirstRoom = vars.currentLevelId == 0 && vars.currentPlaceId == 0 && vars.currentPortalId == 0;  // Portal id is 0 from a new save, and 1 otherwise (e.g. go into next room and back, then save).
+    var isFreshFirstRoom = vars.currentLevelId == 0 && vars.currentPlaceId == 0 /*&& vars.currentPortalId == 0*/;  // Portal id is 0 from a new save, and 1 otherwise (e.g. go into next room and back, then save).
     var isNoLongerOnTitleScreen = DateTime.Now.Subtract(vars.lastDateTimeOnTitleScreen).TotalSeconds > 1;  // Leniency needed when resetting to title screen.
     var inCutscene = current.cursorOff;  // Cursor is off during a cutscene, even when using controller.
-    if (isFreshFirstRoom && isNoLongerOnTitleScreen && inCutscene)
+    if (isFreshFirstRoom && isNoLongerOnTitleScreen /*&& inCutscene*/)
     {
         vars.isTitleScreenToNewSave = true;
     }
+
+    // IMPORTANT!!! either inCutscene or currentPortalId causes the autosplitter not to start
 }
 
 onStart
@@ -335,7 +338,7 @@ split
         return isPickUpHammerSplit || isPickUpCompassSplit || isPickUpWindmillTorchSplit;
     }
 
-    if (vars.oldLevelId == 3 && vars.newLevelId == 3 && vars.oldPlaceId == 7 && vars.newPlaceId == 8 && settings["gardens_splits"] && settings["maze_solved_split"]) {return true;}
+    if (vars.oldLevelId == 3 && vars.currentLevelId == 3 && vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["gardens_splits"] && settings["maze_solved_split"]) {return true;}
     // Maze is part of Factory level, but we consider it as part of Bards area
 
     // Factory (Alchemists) splits
@@ -365,7 +368,7 @@ split
 
     // Exile (Anchorites) splits
     // Merge the Anchorites glyphs
-    if (vars.oldLevelId == 4 && vars.newLevelId == 4 && vars.oldPlaceId == 6 && vars.newPlaceId == 24 && settings["exile_splits"] && settings["glyphs_merged_split"]) {return true;}
+    if (vars.oldLevelId == 4 && vars.currentLevelId == 4 && vars.oldPlaceId == 6 && vars.currentPlaceId == 24 && settings["exile_splits"] && settings["glyphs_merged_split"]) {return true;}
 
     // Split for player starting final cutscene in final room in Exile.
     if (vars.currentLevelId == 4 && vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff)
