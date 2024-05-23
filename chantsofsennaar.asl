@@ -22,32 +22,32 @@ startup
 
     // Settings for Abbey (Devotees) level splits 
     settings.CurrentDefaultParent = null;
-    settings.Add("abbey_splits", true, "Abbey splits");
+    settings.Add("abbey_splits", true, "Abbey (Devotees) splits");
 
     settings.CurrentDefaultParent = "abbey_splits";
-    settings.Add("hide_and_seek_split", true, "Hide and seek");
-    settings.Add("coin_split", true, "Coin");
-    settings.Add("lens_split", true, "Lens");
+    settings.Add("hide_and_seek_split", true, "Finish hide and seek");
+    settings.Add("pick_up_coin_split", true, "Pick up coin item");
+    settings.Add("pick_up_lens_split", true, "Pick up lens item");
 
     // Settings for Fortress (Warriors) level splits
     settings.CurrentDefaultParent = null;
-    settings.Add("fortress_splits", true, "Fortress splits");
+    settings.Add("fortress_splits", true, "Fortress (Warriors) splits");
 
     settings.CurrentDefaultParent = "fortress_splits";
-    settings.Add("stealth_start_split", true, "Stealth start");
-    settings.Add("stealth_hallway_split", true, "Stealth hallway");
-    settings.Add("stealth_box_elevator_split", true, "Stealth box elevator");
-    settings.Add("dress_up_split", true, "Dress up");
+    settings.Add("stealth_start_split", true, "Start stealth section");
+    settings.Add("stealth_corridor_split", true, "Exit stealth corridor");
+    settings.Add("stealth_box_elevator_split", true, "Exit stealth reserve room");
+    settings.Add("dress_up_split", true, "Exit armory room");
 
     // Settings for Gardens (Bards) level splits
     settings.CurrentDefaultParent = null;
-    settings.Add("gardens_splits", true, "Gardens splits");
+    settings.Add("gardens_splits", true, "Gardens (Bards) splits");
 
     settings.CurrentDefaultParent = "gardens_splits";
-    settings.Add("servant_door_split", true, "Servant door");
+    settings.Add("servant_door_split", true, "Exit servant door");
     settings.Add("enter_sewers_split", true, "Enter sewers");
     settings.Add("exit_sewers_split", true, "Exit sewers");
-    settings.Add("windmill_torch_split", true, "Windmill");
+    settings.Add("pick_up_windmill_torch_split", true, "Pick up torch item");
 
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Chants of Sennaar";
@@ -253,11 +253,11 @@ split
         // Finish hide and seek.
         var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["hide_and_seek_split"];
         // Pick up coin item.
-        var isCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["coin_split"];
+        var isPickUpCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["pick_up_coin_split"];
         // Pick up lens item.
-        var isLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["lens_split"];
+        var isPickUpLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["pick_up_lens_split"];
 
-        return isHideAndSeekSplit || isCoinSplit || isLensSplit;
+        return isHideAndSeekSplit || isPickUpCoinSplit || isPickUpLensSplit;
     }
 
     // Fortress (Warriors) splits
@@ -277,14 +277,14 @@ split
 
         // Enter first stealth room.
         var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["stealth_start_split"];
-        // Exit stealth hallway room.
-        var isStealthHallwaySplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && settings["stealth_hallway_split"];
+        // Exit stealth corridor room.
+        var isStealthCorridorSplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && settings["stealth_corridor_split"];
         // Exit stealth box elevator room.
         var isStealthBoxElevatorSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["stealth_box_elevator_split"];
         // Exit dress up room.
         var isDressUpSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["dress_up_split"];
 
-        return isStealthStartSplit || isStealthHallwaySplit || isStealthBoxElevatorSplit || isDressUpSplit;
+        return isStealthStartSplit || isStealthCorridorSplit || isStealthBoxElevatorSplit || isDressUpSplit;
     }
 
     // Gardens (Bards) splits
@@ -309,9 +309,9 @@ split
         // Exit sewers.
         var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && settings["exit_sewers_split"];
         // Pick up torch item at windmill.
-        var isWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["windmill_torch_split"];
+        var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["pick_up_windmill_torch_split"];
 
-        return isServantDoorSplit || isEnterSewersSplit || isExitSewersSplit || isWindmillTorchSplit;
+        return isServantDoorSplit || isEnterSewersSplit || isExitSewersSplit || isPickUpWindmillTorchSplit;
     }
 
     // Split for player starting final cutscene in final room in Exile.
