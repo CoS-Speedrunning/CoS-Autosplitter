@@ -4,21 +4,24 @@ state("Chants Of Sennaar", "v.1.0.0.9")
 
 startup
 {
-    settings.Add("game_save_slot", true, "[Required] Game save slot");
+    // Settings for game save slots.
+    settings.Add("game_save_slot", true, "[Required, single-choice] Game save slot");
     settings.SetToolTip("game_save_slot", "[Required] The save slot that will be used for speedruns. Your level/place ids are determined from the save data.");
 
-    // Settings for game save slots.
     settings.CurrentDefaultParent = "game_save_slot";
     settings.Add("save_slot_1", false, "Save slot 1");
     settings.Add("save_slot_2", false, "Save slot 2");
     settings.Add("save_slot_3", true, "Save slot 3");
+
 
     // Settings for Crypt level splits.
     settings.CurrentDefaultParent = null;
     settings.Add("crypt_splits", true, "Crypt splits");
 
     settings.CurrentDefaultParent = "crypt_splits";
-    settings.Add("first_journal_split", true, "First journal");
+    settings.Add("first_journal_split", true, "Leave the room with the first journal entry");
+    settings.Add("crypt_exit_split", true, "Leave the crypt");
+
 
     // Settings for Abbey (Devotees) level splits 
     settings.CurrentDefaultParent = null;
@@ -28,6 +31,8 @@ startup
     settings.Add("hide_and_seek_split", true, "Finish hide and seek");
     settings.Add("pick_up_coin_split", true, "Pick up coin item");
     settings.Add("pick_up_lens_split", true, "Pick up lens item");
+    settings.Add("abbey_exit_split", true, "Leave Devotee area");
+
 
     // Settings for Fortress (Warriors) level splits
     settings.CurrentDefaultParent = null;
@@ -36,18 +41,40 @@ startup
     settings.CurrentDefaultParent = "fortress_splits";
     settings.Add("stealth_start_split", true, "Start stealth section");
     settings.Add("stealth_corridor_split", true, "Exit stealth corridor");
-    settings.Add("stealth_box_elevator_split", true, "Exit stealth box elevator room");  // TODO: Better name?
+    settings.Add("stealth_box_elevator_split", true, "Exit stealth storage room (with elevator)");
     settings.Add("dress_up_split", true, "Exit armory room");
+    settings.Add("fortress_exit_split", true, "Leave Warrior area");
+
 
     // Settings for Gardens (Bards) level splits
     settings.CurrentDefaultParent = null;
     settings.Add("gardens_splits", true, "Gardens (Bards) splits");
 
     settings.CurrentDefaultParent = "gardens_splits";
-    settings.Add("servant_door_split", true, "Exit through servant door");
-    settings.Add("enter_sewers_split", true, "Enter sewers");
-    settings.Add("exit_sewers_split", true, "Exit sewers");
-    settings.Add("pick_up_windmill_torch_split", true, "Pick up torch item");
+    settings.Add("pick_up_hammer_split", true, "Pick up the hammer");
+    settings.Add("pick_up_compass_split", true, "Pick up the compass");
+    settings.Add("pick_up_windmill_torch_split", true, "Pick up the torch");
+    settings.Add("maze_solved_split", true, "Solve the maze");
+
+
+    // Settings for Factory (Alchemists) level splits
+    settings.CurrentDefaultParent = null;
+    settings.Add("factory_splits", true, "Factory (Alchemists) splits");
+
+    settings.CurrentDefaultParent = "factory_splits";
+    settings.Add("monster_escape_split", true, "Exit the last room with the monster");
+    settings.Add("canteen_entered_split", true, "Enter the canteen");
+    settings.Add("silverware_melt_split", true, "Melt the silverware");
+    settings.Add("factory_exit_split", true, "Leave Alchemists area");
+
+
+    // Settings for Exile (Anchorites) level splits
+    settings.CurrentDefaultParent = null;
+    settings.Add("exile_splits", true, "Exile (Anchorites) splits");
+
+    settings.CurrentDefaultParent = "exile_splits";
+    settings.Add("glyphs_merged_split", true, "Merge the Anchorites' glyphs");
+
 
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Chants of Sennaar";
@@ -195,13 +222,15 @@ start
     }
 
     // Otherwise, check if player moved from title screen to first room's intro cutscene.
-    var isFreshFirstRoom = vars.currentLevelId == 0 && vars.currentPlaceId == 0 && vars.currentPortalId == 0;  // Portal id is 0 from a new save, and 1 otherwise (e.g. go into next room and back, then save).
+    var isFreshFirstRoom = vars.currentLevelId == 0 && vars.currentPlaceId == 0 /*&& vars.currentPortalId == 0*/;  // Portal id is 0 from a new save, and 1 otherwise (e.g. go into next room and back, then save).
     var isNoLongerOnTitleScreen = DateTime.Now.Subtract(vars.lastDateTimeOnTitleScreen).TotalSeconds > 1;  // Leniency needed when resetting to title screen.
     var inCutscene = current.cursorOff;  // Cursor is off during a cutscene, even when using controller.
-    if (isFreshFirstRoom && isNoLongerOnTitleScreen && inCutscene)
+    if (isFreshFirstRoom && isNoLongerOnTitleScreen /*&& inCutscene*/)
     {
         vars.isTitleScreenToNewSave = true;
     }
+
+    // IMPORTANT!!! either inCutscene or currentPortalId causes the autosplitter not to start
 }
 
 onStart
@@ -215,13 +244,13 @@ onStart
 
 split
 {
-    /* ---- Testing logic below ---- */
+    /* ---- Testing logic below ---- 
     // if (vars.currentPlaceId != vars.oldPlaceId)
     // {
     //     print("level + place ids: " + vars.oldLevelId + "," + vars.oldPlaceId + " -> " + vars.currentLevelId + "," + vars.currentPlaceId);
     //     // return true;
     // }
-    /* ---- Testing logic above ---- */
+       ---- Testing logic above ---- */
 
     /* ---- Real logic below ---- */
     /* This only works for Any% category. */
@@ -229,17 +258,17 @@ split
     // Crypt splits
     if (vars.oldLevelId == 0 && vars.currentLevelId == 0 && vars.currentPlaceId <= 6 && settings["crypt_splits"])
     {
-        var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4;
-        var isCryptExit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6;
+        var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4 && settings["first_journal_split"];
+        var isCryptExitSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["crypt_exit_split"];
 
-        return isFirstJournalSplit || isCryptExit;
+        return isFirstJournalSplit || isCryptExitSplit;
     }
 
     // Abbey (Devotees) splits
     if (vars.oldLevelId == 0 && settings["abbey_splits"])
     {
         // Abbey -> Fortress.
-        if (vars.currentLevelId == 1)
+        if (vars.currentLevelId == 1 && settings["abbey_exit_split"])
         {
             return true;
         }
@@ -264,7 +293,7 @@ split
     if (vars.oldLevelId == 1 && settings["fortress_splits"])
     {
         // Fortress -> Gardens.
-        if (vars.currentLevelId == 2)
+        if (vars.currentLevelId == 2 && settings["fortress_exit_split"])
         {
             return true;
         }
@@ -287,14 +316,10 @@ split
         return isStealthStartSplit || isStealthCorridorSplit || isStealthBoxElevatorSplit || isDressUpSplit;
     }
 
-    // Gardens (Bards) splits
+    // Gardens (Bards) splits    
     if (vars.oldLevelId == 2 && settings["gardens_splits"])
     {
-        // Gardens -> Tunnels.
-        if (vars.currentLevelId == 3)
-        {
-            return true;
-        }
+        // No Gardens -> Tunnels - Completing the maze is considered completing the Bards area
 
         // Exit early if current level is not Gardens to avoid duplicate check.
         if (vars.currentLevelId != 2)
@@ -302,32 +327,50 @@ split
             return false;
         }
 
-        // Exit through door that servant opens.
-        var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && settings["servant_door_split"];
-        // Enter sewers.
-        var isEnterSewersSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 11 && settings["enter_sewers_split"];
-        // Exit sewers.
-        var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && settings["exit_sewers_split"];
+        // Pick up hammer item.
+        var isPickUpHammerSplit = vars.currentPlaceId == 10 && vars.isInventoryForcedOpen && settings["pick_up_hammer_split"];
+        // Pick up compass item.
+        var isPickUpCompassSplit = vars.currentPlaceId == 14 && vars.isInventoryForcedOpen && settings["pick_up_compass_split"];
         // Pick up torch item at windmill.
         var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["pick_up_windmill_torch_split"];
 
-        return isServantDoorSplit || isEnterSewersSplit || isExitSewersSplit || isPickUpWindmillTorchSplit;
+        return isPickUpHammerSplit || isPickUpCompassSplit || isPickUpWindmillTorchSplit;
     }
+
+    if (vars.oldLevelId == 3 && vars.currentLevelId == 3 && vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["gardens_splits"] && settings["maze_solved_split"]) {return true;}
+    // Maze is part of Factory level, but we consider it as part of Bards area
+
+    // Factory (Alchemists) splits
+    if (vars.oldLevelId == 3 && settings["factory_splits"])
+    {
+        // Factory -> Exile
+        if (vars.currentLevelId == 4 && settings["factory_exit_split"])
+        {
+            return true;
+        }
+
+        // Exit early if current level is not Factory to avoid duplicate check.
+        if (vars.currentLevelId != 3)
+        {
+            return false;
+        }
+
+        // Exit the last room with the monster
+        var isMonsterEscapeSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["monster_escape_split"];
+        // Enter the canteen
+        var isCanteenEnteredSplit = vars.oldPlaceId == 31 && vars.currentPlaceId == 32 && settings["canteen_entered_split"];
+        // Melt the silverware
+        var isSilverwareMeltSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && settings["silverware_melt_split"];
+
+        return isMonsterEscapeSplit || isCanteenEnteredSplit || isSilverwareMeltSplit;
+    }
+
+    // Exile (Anchorites) splits
+    // Merge the Anchorites glyphs
+    if (vars.oldLevelId == 4 && vars.currentLevelId == 4 && vars.oldPlaceId == 6 && vars.currentPlaceId == 24 && settings["exile_splits"] && settings["glyphs_merged_split"]) {return true;}
 
     // Split for player starting final cutscene in final room in Exile.
     if (vars.currentLevelId == 4 && vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff)
-    {
-        return true;
-    }
-
-    // Split for Tunnels -> Factory
-    if (vars.oldLevelId == 3 && vars.oldPlaceId == 14 && vars.currentLevelId == 3 && vars.currentPlaceId == 16)
-    {
-        return true;
-    }
-
-    // Split for general case of advancing to new level.
-    if (vars.currentLevelId > vars.oldLevelId)
     {
         return true;
     }
