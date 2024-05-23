@@ -195,7 +195,6 @@ onReset
     vars.isTitleScreenToNewSave = false;
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
-    print("testtesttest");
 }
 
 start
