@@ -1,75 +1,181 @@
 state("Chants Of Sennaar", "v.1.0.0.9")
 {
-    // Offsets for original game, using GameController offsets and save slot 3.
-    long gameControllerPtr :  "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28;
-
-    // This turns true when entering the final cutscene, and works even on controller.
-    bool cursorOff :                 "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28, 0x88, 0x34;              // GameController > inputsController > cursorOff
-
-    long titleScreenPtr :            "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28, 0x90, 0x20;              // GameController > placeController > titleScreen
-    long currentPlacePtr :           "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28, 0x90, 0x40;              // GameController > placeController > currentPlace
-    int levelId :                    "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28, 0x90, 0x38, 0x30, 0x20;  // GameController > placeController > gameSaves[2] > currentPlaceId > level
-    int placeId :                    "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28, 0x90, 0x38, 0x30, 0x24;  // GameController > placeController > gameSaves[2] > currentPlaceId > id
-    int portalId :                   "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28, 0x90, 0x38, 0x30, 0x28;  // GameController > placeController > gameSaves[2] > currentPortalId
-
-    bool isPlayerMoving :            "UnityPlayer.dll", 0x01B01D68, 0x0, 0x90, 0x28, 0x0, 0x28, 0x28, 0xA0, 0x58, 0xC6;        // GameController > playerController > playerMove > isMoving
 }
 
 startup
 {
-    settings.Add("game_save_slot", true, "[Required] Game save slot for speedruns");
+    settings.Add("game_save_slot", true, "[Required] Game save slot");
+    settings.SetToolTip("game_save_slot", "[Required] The save slot that will be used for speedruns. Your level/place ids are determined from the save data.");
+
     settings.CurrentDefaultParent = "game_save_slot";
-    settings.Add("save_slot_1", false, "Use save slot 1");
-    settings.Add("save_slot_2", false, "Use save slot 2");
-    settings.Add("save_slot_3", true, "Use save slot 3");
+    settings.Add("save_slot_1", false, "Save slot 1");
+    settings.Add("save_slot_2", false, "Save slot 2");
+    settings.Add("save_slot_3", true, "Save slot 3");
 
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Chants of Sennaar";
-    vars.Helper.LoadSceneManager = true;
 }
 
-// This block only runs if the timer is not running.
-start
+init
 {
-    var inFirstRoom = current.levelId == 0 && current.placeId == 0;
-    var isNewSave = current.portalId == 0;  // This will be 0 from a new save, and 1 otherwise (e.g. going into next room and back, then save)
-    return inFirstRoom && isNewSave && current.isPlayerMoving;
+    vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
+    {
+        vars.Helper["cursorOff"] = mono.Make<bool>("GameController", "staticInstance", "inputsController", "cursorOff");
+
+        vars.Helper["titleScreenPtr"] = mono.Make<ulong>("GameController", "staticInstance", "placeController", "titleScreen");
+        vars.Helper["currentPlacePtr"] = mono.Make<ulong>("GameController", "staticInstance", "placeController", "currentPlace");
+
+        vars.Helper["gameSave1LevelId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x20, "currentPlaceId", "level");
+        vars.Helper["gameSave1PlaceId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x20, "currentPlaceId", "id");
+        vars.Helper["gameSave1PortalId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x20, "currentPortalId");
+
+        vars.Helper["gameSave2LevelId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x28, "currentPlaceId", "level");
+        vars.Helper["gameSave2PlaceId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x28, "currentPlaceId", "id");
+        vars.Helper["gameSave2PortalId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x28, "currentPortalId");
+
+        vars.Helper["gameSave3LevelId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x30, "currentPlaceId", "level");
+        vars.Helper["gameSave3PlaceId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x30, "currentPlaceId", "id");
+        vars.Helper["gameSave3PortalId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x30, "currentPortalId");
+
+        vars.Helper["playerControllerPtr"] = mono.Make<ulong>("GameController", "staticInstance", "playerController");
+        vars.Helper["isPlayerMoving"] = mono.Make<bool>("GameController", "staticInstance", "playerController", "playerMove", "isMoving");
+        vars.Helper["canPlayerRun"] = mono.Make<bool>("GameController", "staticInstance", "playerController", "playerMove", "canRun");
+
+        return true;
+    });
+
+    // Gets the last DateTime that player was on the title screen.
+    vars.lastDateTimeOnTitleScreen = null;
+
+    // Gets whether the player went from the title screen to the first cutscene.
+    vars.isTitleScreenToNewSave = false;
 }
 
-// This block only runs if the timer is running or paused.
+update
+{
+    // Determine save slot based on setting, and populate vars with old and current level/place ids.
+    if (settings["save_slot_1"] && !settings["save_slot_2"] && !settings["save_slot_3"])
+    {
+        vars.oldLevelId = old.gameSave1LevelId;
+        vars.oldPlaceId = old.gameSave1PlaceId;
+        vars.currentLevelId = current.gameSave1LevelId;
+        vars.currentPlaceId = current.gameSave1PlaceId;
+        vars.currentPortalId = current.gameSave1PortalId;
+        return true;
+    }
+    else if (!settings["save_slot_1"] && settings["save_slot_2"] && !settings["save_slot_3"])
+    {
+        vars.oldLevelId = old.gameSave2LevelId;
+        vars.oldPlaceId = old.gameSave2PlaceId;
+        vars.currentLevelId = current.gameSave2LevelId;
+        vars.currentPlaceId = current.gameSave2PlaceId;
+        vars.currentPortalId = current.gameSave2PortalId;
+        return true;
+    }
+    else if (!settings["save_slot_1"] && !settings["save_slot_2"] && settings["save_slot_3"])
+    {
+        vars.oldLevelId = old.gameSave3LevelId;
+        vars.oldPlaceId = old.gameSave3PlaceId;
+        vars.currentLevelId = current.gameSave3LevelId;
+        vars.currentPlaceId = current.gameSave3PlaceId;
+        vars.currentPortalId = current.gameSave3PortalId;
+        return true;
+    }
+
+    // If setting config is invalid, don't run autosplitter.
+    return false;
+}
+
 reset
 {
+    // Check if player is on title screen.
     return current.currentPlacePtr == current.titleScreenPtr;
+}
+
+onReset
+{
+    // Reset vars.
+    vars.lastDateTimeOnTitleScreen = null;
+    vars.isTitleScreenToNewSave = false;
+}
+
+start
+{
+    // Check if player is on title screen.
+    if (current.currentPlacePtr == current.titleScreenPtr)
+    {
+        // Store current time and exit early.
+        vars.lastDateTimeOnTitleScreen = DateTime.Now;
+        vars.isTitleScreenToNewSave = false;
+        return false;
+    }
+
+    // Check if script started while not on the title screen.
+    if (vars.lastDateTimeOnTitleScreen == null)
+    {
+        return false;
+    }
+
+    // Check if player moved from title screen to first cutscene.
+    if (vars.isTitleScreenToNewSave)
+    {
+        // Start timer when player starts moving.
+        return current.isPlayerMoving;
+    }
+
+    // Otherwise, check if player moved from title screen to first room's intro cutscene.
+    var isFreshFirstRoom = vars.currentLevelId == 0 && vars.currentPlaceId == 0 && vars.currentPortalId == 0;  // Portal id is 0 from a new save, and 1 otherwise (e.g. go into next room and back, then save).
+    var isNoLongerOnTitleScreen = DateTime.Now.Subtract(vars.lastDateTimeOnTitleScreen).TotalSeconds > 1;  // Leniency needed when resetting to title screen.
+    var inCutscene = current.cursorOff;  // Cursor is off during a cutscene, even when using controller.
+    if (isFreshFirstRoom && isNoLongerOnTitleScreen && inCutscene)
+    {
+        print("Moved from title screen to first room");
+        vars.isTitleScreenToNewSave = true;
+    }
+}
+
+onStart
+{
+    // Reset vars.
+    vars.lastDateTimeOnTitleScreen = null;
+    vars.isTitleScreenToNewSave = false;
 }
 
 split
 {
-    if (current.placeId != old.placeId)
-    {
-        print("level + place ids: " + old.levelId + "," + old.placeId + " -> " + current.levelId + "," + current.placeId);
-        return true;
-    }
+    /* ---- Testing logic below ---- */
+    // if (vars.currentPlaceId != vars.oldPlaceId)
+    // {
+    //     print("level + place ids: " + vars.oldLevelId + "," + vars.oldPlaceId + " -> " + vars.currentLevelId + "," + vars.currentPlaceId);
+    //     return true;
+    // }
+    /* ---- Testing logic above ---- */
 
     /* This only works for Any% category. */
 
+    /* ---- Real logic below ---- */
     // Split for player starting final cutscene in final room in Exile.
-    if (current.levelId == 4 && current.placeId == 2 && !old.cursorOff && current.cursorOff)
+    if (vars.currentLevelId == 4 && vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff)
     {
         return true;
     }
 
     // Split for Crypt -> Abbey
-    if (old.levelId == 0 && old.placeId == 6 && current.levelId == 0 && current.placeId == 7) {
+    if (vars.oldLevelId == 0 && vars.oldPlaceId == 6 && vars.currentLevelId == 0 && vars.currentPlaceId == 7)
+    {
         return true;
     }
 
     // Split for Tunnels -> Factory
-    if (old.levelId == 3 && old.placeId == 14 && current.levelId == 3 && current.placeId == 16) {
+    if (vars.oldLevelId == 3 && vars.oldPlaceId == 14 && vars.currentLevelId == 3 && vars.currentPlaceId == 16)
+    {
         return true;
     }
 
     // Split for general case of advancing to new level.
-    if (current.levelId > old.levelId) {
+    if (vars.currentLevelId > vars.oldLevelId)
+    {
         return true;
     }
+    /* ---- Real logic above ---- */
 }
