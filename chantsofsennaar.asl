@@ -13,14 +13,20 @@ startup
     settings.Add("save_slot_2", false, "Save slot 2");
     settings.Add("save_slot_3", true, "Save slot 3");
 
+    // Settings for Crypt level splits.
+    settings.CurrentDefaultParent = null;
+    settings.Add("crypt_splits", true, "Crypt splits");
+
+    settings.CurrentDefaultParent = "crypt_splits";
+    settings.Add("first_journal_split", true, "First journal");
+
     // Settings for Abbey (Devotees) level splits 
     settings.CurrentDefaultParent = null;
     settings.Add("abbey_splits", true, "Abbey splits");
 
     settings.CurrentDefaultParent = "abbey_splits";
-    settings.Add("crypt_split", true, "Crypt");
     settings.Add("hide_and_seek_split", true, "Hide and seek");
-    settings.Add("bed_puzzle_split", true, "Bed puzzle");
+    settings.Add("coin_split", true, "Coin");
     settings.Add("lens_split", true, "Lens");
 
     // Settings for Fortress (Warriors) level splits
@@ -220,7 +226,16 @@ split
     /* ---- Real logic below ---- */
     /* This only works for Any% category. */
 
-    // Crypt + Abbey (Devotees) splits
+    // Crypt splits
+    if (vars.oldLevelId == 0 && vars.currentLevelId == 0 && vars.currentPlaceId <= 6 && settings["crypt_splits"])
+    {
+        var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4;
+        var isCryptExit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6;
+
+        return isFirstJournalSplit || isCryptExit;
+    }
+
+    // Abbey (Devotees) splits
     if (vars.oldLevelId == 0 && settings["abbey_splits"])
     {
         // Abbey -> Fortress.
@@ -229,22 +244,20 @@ split
             return true;
         }
 
-        // Exit early if current level is not Crypt + Abbey to avoid duplicate check.
+        // Exit early if current level is not Abbey to avoid duplicate check.
         if (vars.currentLevelId != 0)
         {
             return false;
         }
 
-        // Crypt -> Abbey.
-        var isCryptSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["crypt_split"];
         // Finish hide and seek.
         var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["hide_and_seek_split"];
-        // Finish bed puzzle and pick up coin item.
-        var isBedPuzzleSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["bed_puzzle_split"];
+        // Pick up coin item.
+        var isCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["coin_split"];
         // Pick up lens item.
         var isLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["lens_split"];
 
-        return isCryptSplit || isHideAndSeekSplit || isBedPuzzleSplit || isLensSplit;
+        return isHideAndSeekSplit || isCoinSplit || isLensSplit;
     }
 
     // Fortress (Warriors) splits
