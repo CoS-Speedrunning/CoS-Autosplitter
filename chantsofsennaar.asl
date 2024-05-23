@@ -7,11 +7,13 @@ startup
     settings.Add("game_save_slot", true, "[Required] Game save slot");
     settings.SetToolTip("game_save_slot", "[Required] The save slot that will be used for speedruns. Your level/place ids are determined from the save data.");
 
+    // Settings for game save slots.
     settings.CurrentDefaultParent = "game_save_slot";
     settings.Add("save_slot_1", false, "Save slot 1");
     settings.Add("save_slot_2", false, "Save slot 2");
     settings.Add("save_slot_3", true, "Save slot 3");
 
+    // Settings for Abbey (Devotees) level splits 
     settings.CurrentDefaultParent = null;
     settings.Add("abbey_splits", true, "Abbey splits");
 
@@ -20,6 +22,26 @@ startup
     settings.Add("hide_and_seek_split", true, "Hide and seek");
     settings.Add("bed_puzzle_split", true, "Bed puzzle");
     settings.Add("lens_split", true, "Lens");
+
+    // Settings for Fortress (Warriors) level splits
+    settings.CurrentDefaultParent = null;
+    settings.Add("fortress_splits", true, "Fortress splits");
+
+    settings.CurrentDefaultParent = "fortress_splits";
+    settings.Add("stealth_start_split", true, "Stealth start");
+    settings.Add("stealth_hallway_split", true, "Stealth hallway");
+    settings.Add("stealth_box_elevator_split", true, "Stealth box elevator");
+    settings.Add("dress_up_split", true, "Dress up");
+
+    // Settings for Gardens (Bards) level splits
+    settings.CurrentDefaultParent = null;
+    settings.Add("gardens_splits", true, "Gardens splits");
+
+    settings.CurrentDefaultParent = "gardens_splits";
+    settings.Add("servant_door_split", true, "Servant door");
+    settings.Add("enter_sewers_split", true, "Enter sewers");
+    settings.Add("exit_sewers_split", true, "Exit sewers");
+    settings.Add("windmill_torch_split", true, "Windmill");
 
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Chants of Sennaar";
@@ -99,7 +121,7 @@ update
     else
     {
         // If setting config is invalid, don't run autosplitter.
-        print("Save slot config is invalid, autosplitter will not run.")
+        print("Save slot config is invalid, autosplitter will not run.");
         return false;
     }
 
@@ -188,21 +210,21 @@ onStart
 split
 {
     /* ---- Testing logic below ---- */
-    if (vars.currentPlaceId != vars.oldPlaceId)
-    {
-        print("level + place ids: " + vars.oldLevelId + "," + vars.oldPlaceId + " -> " + vars.currentLevelId + "," + vars.currentPlaceId);
-        // return true;
-    }
+    // if (vars.currentPlaceId != vars.oldPlaceId)
+    // {
+    //     print("level + place ids: " + vars.oldLevelId + "," + vars.oldPlaceId + " -> " + vars.currentLevelId + "," + vars.currentPlaceId);
+    //     // return true;
+    // }
     /* ---- Testing logic above ---- */
 
     /* ---- Real logic below ---- */
     /* This only works for Any% category. */
 
-    // Crypt + Abbey splits
-    if (vars.oldLevelId == 0)
+    // Crypt + Abbey (Devotees) splits
+    if (vars.oldLevelId == 0 && settings["abbey_splits"])
     {
         // Abbey -> Fortress.
-        if (vars.currentLevelId == 1 && settings["abbey_splits"])
+        if (vars.currentLevelId == 1)
         {
             return true;
         }
@@ -217,12 +239,66 @@ split
         var isCryptSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["crypt_split"];
         // Finish hide and seek.
         var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["hide_and_seek_split"];
-        // Finish bed puzzle by picking up coin item.
+        // Finish bed puzzle and pick up coin item.
         var isBedPuzzleSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["bed_puzzle_split"];
         // Pick up lens item.
         var isLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["lens_split"];
 
         return isCryptSplit || isHideAndSeekSplit || isBedPuzzleSplit || isLensSplit;
+    }
+
+    // Fortress (Warriors) splits
+    if (vars.oldLevelId == 1 && settings["fortress_splits"])
+    {
+        // Fortress -> Gardens.
+        if (vars.currentLevelId == 2)
+        {
+            return true;
+        }
+
+        // Exit early if current level is not Fortress to avoid duplicate check.
+        if (vars.currentLevelId != 1)
+        {
+            return false;
+        }
+
+        // Enter first stealth room.
+        var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["stealth_start_split"];
+        // Exit stealth hallway room.
+        var isStealthHallwaySplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && settings["stealth_hallway_split"];
+        // Exit stealth box elevator room.
+        var isStealthBoxElevatorSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["stealth_box_elevator_split"];
+        // Exit dress up room.
+        var isDressUpSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["dress_up_split"];
+
+        return isStealthStartSplit || isStealthHallwaySplit || isStealthBoxElevatorSplit || isDressUpSplit;
+    }
+
+    // Gardens (Bards) splits
+    if (vars.oldLevelId == 2 && settings["gardens_splits"])
+    {
+        // Gardens -> Tunnels.
+        if (vars.currentLevelId == 3)
+        {
+            return true;
+        }
+
+        // Exit early if current level is not Gardens to avoid duplicate check.
+        if (vars.currentLevelId != 2)
+        {
+            return false;
+        }
+
+        // Exit through door that servant opens.
+        var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && settings["servant_door_split"];
+        // Enter sewers.
+        var isEnterSewersSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 11 && settings["enter_sewers_split"];
+        // Exit sewers.
+        var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && settings["exit_sewers_split"];
+        // Pick up torch item at windmill.
+        var isWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["windmill_torch_split"];
+
+        return isServantDoorSplit || isEnterSewersSplit || isExitSewersSplit || isWindmillTorchSplit;
     }
 
     // Split for player starting final cutscene in final room in Exile.
