@@ -53,9 +53,7 @@ startup
 
     settings.CurrentDefaultParent = "gardens_splits";
     settings.Add("servant_door_split", true, "Exit through the servant's door");
-    settings.Add("pick_up_hammer_split", true, "Pick up the hammer");
     settings.Add("enter_sewers_split", true, "Enter the sewers");
-    settings.Add("pick_up_compass_split", true, "Pick up the compass");
     settings.Add("exit_sewers_split", true, "Exit the sewers");
     settings.Add("pick_up_windmill_torch_split", true, "Pick up the torch");
     settings.SetToolTip("pick_up_windmill_torch_split", "Pick up the torch at the windmill");
@@ -350,18 +348,14 @@ split
 
         // Exit through door that servant opens.
         var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && settings["servant_door_split"];
-        // Pick up hammer item.
-        var isPickUpHammerSplit = vars.currentPlaceId == 10 && vars.isInventoryForcedOpen && settings["pick_up_hammer_split"];
         // Enter sewers.
         var isEnterSewersSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 11 && settings["enter_sewers_split"];
-        // Pick up compass item.
-        var isPickUpCompassSplit = vars.currentPlaceId == 14 && vars.isInventoryForcedOpen && settings["pick_up_compass_split"];
         // Exit sewers.
         var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && settings["exit_sewers_split"];
         // Pick up torch item at windmill.
         var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["pick_up_windmill_torch_split"];
 
-        return isServantDoorSplit || isPickUpHammerSplit || isEnterSewersSplit || isPickUpCompassSplit || isExitSewersSplit || isPickUpWindmillTorchSplit;
+        return isServantDoorSplit || isEnterSewersSplit || isExitSewersSplit || isPickUpWindmillTorchSplit;
     }
 
     // Tunnels splits
