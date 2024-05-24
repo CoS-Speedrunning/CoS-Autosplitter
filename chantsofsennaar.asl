@@ -80,7 +80,7 @@ startup
     settings.Add("pick_up_silverware_split", true, "Pick up the silverware");
     settings.Add("pick_up_silver_bar", true, "Pick up the silver bar");
     settings.SetToolTip("pick_up_silver_bar", "Pick up the silver bar after melting the silverware");
-    settings.Add("factory_exit_split", true, "Leave Alchemists area");
+    settings.Add("factory_exit_split", true, "Exit the Factory level");
     settings.SetToolTip("factory_exit_split", "Place the crafted key into the door and exit room");
 
     // Settings for Exile (Anchorites) level splits
