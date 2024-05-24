@@ -40,7 +40,7 @@ startup
     settings.Add("fortress_splits", true, "Fortress (Warriors) splits");
 
     settings.CurrentDefaultParent = "fortress_splits";
-    settings.Add("spear_terminal_room_split", true, "Enter the room with the spear");
+    settings.Add("spear_terminal_room_split", true, "Exit the room with the spear");
     settings.Add("stealth_start_split", true, "Start the stealth section");
     settings.Add("stealth_corridor_split", true, "Exit the stealth corridor");
     settings.Add("stealth_storage_room_split", true, "Exit the stealth storage room");
@@ -317,7 +317,7 @@ split
         }
 
         // Pick up spear item.
-        var isSpearTerminalRoomSplit = vars.oldPlaceId == 6 && vars.currentPlaceId == 7 && settings["spear_terminal_room_split"];
+        var isSpearTerminalRoomSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["spear_terminal_room_split"];
         // Enter first stealth room.
         var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["stealth_start_split"];
         // Exit stealth corridor room.
@@ -377,8 +377,18 @@ split
     }
 
     // Exile (Anchorites) splits
-    if (vars.oldLevelId == 4 && vars.currentLevelId == 4 && settings["exile_splits"])
-    {
+    if (vars.oldLevelId == 4 && vars.currentLevelId == 4)
+    {   
+        // Final split for player starting cutscene in final room in Exile. Not optional
+        if (vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff) {
+            return true;
+        }
+
+        // Exit early if splits not selected
+        if (!settings["exile_splits"])
+        {
+            return false;
+        }
         // Enter the Creator's room after entering the 3-glyph code in the keypad.
         var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && settings["exile_npc_room_split"];
         // Pick up Exile key.
@@ -387,8 +397,5 @@ split
         return isExileNpcRoomSplit || isPickUpExileKeySplit;
     }
 
-    // Final split for player starting cutscene in final room in Exile. Not optional
-    if (vars.currentLevelId == 4 && vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff) {
-        return true;
-    }
+    
 }
