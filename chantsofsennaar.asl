@@ -6,7 +6,7 @@ startup
 {
     // Settings for game save slots.
     settings.Add("game_save_slot", true, "[Required, select 1] Game save slot");
-    settings.SetToolTip("game_save_slot", "[Required] The save slot that will be used for speedruns. Your level/place ids are determined from the save data.");
+    settings.SetToolTip("game_save_slot", "The save slot that will be used for speedruns. Your level/place ids are determined from the save data.");
 
     settings.CurrentDefaultParent = "game_save_slot";
     settings.Add("save_slot_1", false, "Save slot 1");
@@ -18,7 +18,8 @@ startup
     settings.Add("crypt_splits", true, "Crypt splits");
 
     settings.CurrentDefaultParent = "crypt_splits";
-    settings.Add("first_journal_split", true, "Complete the 1st journal entry and exit room");
+    settings.Add("first_journal_split", true, "1st journal entry");
+    settings.SetToolTip("first_journal_split", "Complete the 1st journal entry and exit room");
     settings.Add("crypt_exit_split", true, "Exit the Crypt level");
 
     // Settings for Abbey (Devotees) level splits 
@@ -26,7 +27,8 @@ startup
     settings.Add("abbey_splits", true, "Abbey (Devotees) splits");
 
     settings.CurrentDefaultParent = "abbey_splits";
-    settings.Add("hide_and_seek_split", true, "Finish hide and seek and enter the stealth section");
+    settings.Add("hide_and_seek_split", true, "Finish hide and seek");
+    settings.SetToolTip("hide_and_seek_split", "Finish hide and seek and enter the stealth room");
     settings.Add("pick_up_coin_split", true, "Pick up the coin");
     settings.Add("pick_up_lens_split", true, "Pick up the lens");
     settings.Add("abbey_exit_split", true, "Exit the Abbey level");
@@ -36,10 +38,13 @@ startup
     settings.Add("fortress_splits", true, "Fortress (Warriors) splits");
 
     settings.CurrentDefaultParent = "fortress_splits";
+    settings.Add("pick_up_spear_split", true, "Pick up the spear");
     settings.Add("stealth_start_split", true, "Start the stealth section");
     settings.Add("stealth_corridor_split", true, "Exit the stealth corridor");
-    settings.Add("stealth_box_elevator_split", true, "Exit the stealth storage room (with elevator)");
-    settings.Add("dress_up_split", true, "Exit the armory room (after disguising as a guard)");
+    settings.Add("stealth_box_elevator_split", true, "Exit the stealth storage room");
+    settings.SetToolTip("stealth_box_elevator_split", "Exit the storage room, with a elevator with 2 boxes on it and a guard near the exit");
+    settings.Add("dress_up_split", true, "Exit the armory");
+    settings.SetToolTip("dress_up_split", "Exit the armory after disguising as a guard");
     settings.Add("fortress_exit_split", true, "Exit the Fortress level");
 
     // Settings for Gardens (Bards) level splits
@@ -52,7 +57,8 @@ startup
     settings.Add("enter_sewers_split", true, "Enter the sewers");
     settings.Add("pick_up_compass_split", true, "Pick up the compass");
     settings.Add("exit_sewers_split", true, "Exit the sewers");
-    settings.Add("pick_up_windmill_torch_split", true, "Pick up the torch at the windmill");
+    settings.Add("pick_up_windmill_torch_split", true, "Pick up the torch");
+    settings.SetToolTip("pick_up_windmill_torch_split", "Pick up the torch at the windmill");
     settings.Add("gardens_exit_split", true, "Exit the Gardens level");
 
     // Settings for Tunnels level splits
@@ -69,7 +75,8 @@ startup
 
     settings.CurrentDefaultParent = "factory_splits";
     settings.Add("pick_up_silverware_split", true, "Pick up the silverware");
-    settings.Add("pick_up_silver_bar", true, "Pick up the silver bar (after melting the silverware)");
+    settings.Add("pick_up_silver_bar", true, "Pick up the silver bar");
+    settings.SetToolTip("pick_up_silver_bar", "Pick up the silver bar after melting the silverware");
     settings.Add("factory_exit_split", true, "Leave Alchemists area");
 
     // Settings for Exile (Anchorites) level splits
@@ -77,9 +84,10 @@ startup
     settings.Add("exile_splits", true, "Exile (Anchorites) splits");
 
     settings.CurrentDefaultParent = "exile_splits";
-    settings.Add("collect_exile_glyphs_split", true, "Collect the Anchorite glyphs at the 3 yellow machines and exit room");
+    settings.Add("exile_npc_room_split", true, "Enter the Creator's room");
+    settings.SetToolTip("exile_npc_room_split", "Enter the Creator's room after entering the code in the keypad");
     settings.Add("pick_up_exile_key_split", true, "Pick up the Exile key");
-    settings.Add("game_end_split", true, "Enter the final cutscene");
+    settings.Add("game_end_split", true, "Start the final cutscene");
 
     // Load the asl-help script
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
@@ -312,6 +320,8 @@ split
             return false;
         }
 
+        // Pick up spear item.
+        var isPickUpSpearSplit = vars.currentPlaceId == 7 && vars.isInventoryForcedOpen && settings["pick_up_spear_split"];
         // Enter first stealth room.
         var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["stealth_start_split"];
         // Exit stealth corridor room.
@@ -321,7 +331,7 @@ split
         // Exit dress up room.
         var isDressUpSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["dress_up_split"];
 
-        return isStealthStartSplit || isStealthCorridorSplit || isStealthBoxElevatorSplit || isDressUpSplit;
+        return isPickUpSpearSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthBoxElevatorSplit || isDressUpSplit;
     }
 
     // Gardens (Bards) splits    
@@ -392,14 +402,14 @@ split
     // Exile (Anchorites) splits
     if (vars.oldLevelId == 4 && vars.currentLevelId == 4 && settings["exile_splits"])
     {
-        // Collect the Anchorite glyphs at the 3 yellow machines and exit room.
-        var isCollectExileGlyphsSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 25 && settings["collect_exile_glyphs_split"];
+        // Enter the Creator's room after entering the 3-glyph code in the keypad.
+        var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && settings["exile_npc_room_split"];
         // Pick up Exile key.
         var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && settings["pick_up_exile_key_split"];
         // Final split for player starting cutscene in final room in Exile.
         var isFinalSplit = vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff && settings["game_end_split"];
 
-        return isCollectExileGlyphsSplit || isPickUpExileKeySplit || isFinalSplit;
+        return isExileNpcRoomSplit || isPickUpExileKeySplit || isFinalSplit;
     }
     /* ---- Real logic above ---- */
 }
