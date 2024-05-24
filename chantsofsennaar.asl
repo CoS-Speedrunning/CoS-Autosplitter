@@ -21,6 +21,7 @@ startup
     settings.Add("first_journal_split", true, "1st journal entry");
     settings.SetToolTip("first_journal_split", "Complete the 1st journal entry and exit room");
     settings.Add("crypt_exit_split", true, "Exit the Crypt level");
+    settings.SetToolTip("crypt_exit_split", "Finish the water locks puzzle and exit room")
 
     // Settings for Abbey (Devotees) level splits 
     settings.CurrentDefaultParent = null;
@@ -66,6 +67,7 @@ startup
     settings.CurrentDefaultParent = "tunnels_splits";
     settings.Add("maze_exit_split", true, "Exit the maze");
     settings.Add("tunnels_exit_split", true, "Exit the Tunnels level");
+    settings.SetToolTip("tunnels_exit_split", "Activate and take the elevator from Tunnels to Factory");
 
     // Settings for Factory (Alchemists) level splits
     settings.CurrentDefaultParent = null;
