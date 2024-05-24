@@ -266,7 +266,6 @@ split
     // }
        ---- Testing logic above ---- */
 
-    /* ---- Real logic below ---- */
     /* This only works for Any% category. */
 
     // Crypt splits
@@ -411,5 +410,4 @@ split
 
         return isExileNpcRoomSplit || isPickUpExileKeySplit || isFinalSplit;
     }
-    /* ---- Real logic above ---- */
 }
