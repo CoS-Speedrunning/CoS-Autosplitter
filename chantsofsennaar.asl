@@ -60,7 +60,6 @@ startup
     settings.Add("exit_sewers_split", true, "Exit the sewers");
     settings.Add("pick_up_windmill_torch_split", true, "Pick up the torch");
     settings.SetToolTip("pick_up_windmill_torch_split", "Pick up the torch at the windmill");
-    settings.Add("gardens_exit_split", true, "Exit the Gardens level");
     settings.Add("maze_exit_split", true, "Exit the maze");
 
     // Settings for Factory (Alchemists) level splits
@@ -332,20 +331,8 @@ split
     }
 
     // Gardens (Bards) splits    
-    if (vars.oldLevelId == 2 && settings["gardens_splits"])
+    if (vars.oldLevelId == 2 && vars.currentLevelId == 2 && settings["gardens_splits"])
     {
-        // Gardens -> Tunnels
-        if (vars.currentLevelId == 3 && settings["gardens_exit_split"])
-        {
-            return true;
-        }
-
-        // Exit early if current level is not Gardens to avoid duplicate check.
-        if (vars.currentLevelId != 2)
-        {
-            return false;
-        }
-
         // Exit through door that servant opens.
         var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && settings["servant_door_split"];
         // Enter sewers.
@@ -386,7 +373,7 @@ split
         // Pick up silver bar item after melting the silverware.
         var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && settings["pick_up_silver_bar"];
 
-        return isPickUpSilverwareSplit || isPickUpSilverBarSplit;
+        return isTunnelExitSplit || isPickUpSilverwareSplit || isPickUpSilverBarSplit;
     }
 
     // Exile (Anchorites) splits
@@ -401,7 +388,7 @@ split
     }
 
     // Final split for player starting cutscene in final room in Exile. Not optional
-    if (vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff) {
+    if (vars.currentLevelId == 4 && vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff) {
         return true;
     }
 }
