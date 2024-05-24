@@ -21,7 +21,7 @@ startup
     settings.Add("first_journal_split", true, "1st journal entry");
     settings.SetToolTip("first_journal_split", "Complete the 1st journal entry and exit room");
     settings.Add("crypt_exit_split", true, "Exit the Crypt level");
-    settings.SetToolTip("crypt_exit_split", "Finish the water locks puzzle and exit room")
+    settings.SetToolTip("crypt_exit_split", "Finish the water locks puzzle and exit room");
 
     // Settings for Abbey (Devotees) level splits 
     settings.CurrentDefaultParent = null;
@@ -31,6 +31,7 @@ startup
     settings.Add("hide_and_seek_split", true, "Finish hide and seek");
     settings.SetToolTip("hide_and_seek_split", "Finish hide and seek and enter the stealth room");
     settings.Add("pick_up_coin_split", true, "Pick up the coin");
+    settings.Add("enter_church_split", true, "Enter the church");
     settings.Add("pick_up_lens_split", true, "Pick up the lens");
     settings.Add("abbey_exit_split", true, "Exit the Abbey level");
 
@@ -42,11 +43,12 @@ startup
     settings.Add("pick_up_spear_split", true, "Pick up the spear");
     settings.Add("stealth_start_split", true, "Start the stealth section");
     settings.Add("stealth_corridor_split", true, "Exit the stealth corridor");
-    settings.Add("stealth_box_elevator_split", true, "Exit the stealth storage room");
-    settings.SetToolTip("stealth_box_elevator_split", "Exit the storage room, with a elevator with 2 boxes on it and a guard near the exit");
-    settings.Add("dress_up_split", true, "Exit the armory");
-    settings.SetToolTip("dress_up_split", "Exit the armory after disguising as a guard");
+    settings.Add("stealth_storage_room_split", true, "Exit the stealth storage room");
+    settings.SetToolTip("stealth_storage_room_split", "Exit the storage room (has a elevator with 2 boxes on it and a guard near the exit)");
+    settings.Add("armory_exit_split", true, "Exit the armory");
+    settings.SetToolTip("armory_exit_split", "Exit the armory after disguising as a guard");
     settings.Add("fortress_exit_split", true, "Exit the Fortress level");
+    settings.SetToolTip("fortress_exit_split", "Take the elevator to the Gardens");
 
     // Settings for Gardens (Bards) level splits
     settings.CurrentDefaultParent = null;
@@ -59,6 +61,7 @@ startup
     settings.Add("pick_up_windmill_torch_split", true, "Pick up the torch");
     settings.SetToolTip("pick_up_windmill_torch_split", "Pick up the torch at the windmill");
     settings.Add("gardens_exit_split", true, "Exit the Gardens level");
+    settings.SetToolTip("gardens_exit_split", "Place the torch in the door and exit room");
 
     // Settings for Tunnels level splits
     settings.CurrentDefaultParent = null;
@@ -78,6 +81,7 @@ startup
     settings.Add("pick_up_silver_bar", true, "Pick up the silver bar");
     settings.SetToolTip("pick_up_silver_bar", "Pick up the silver bar after melting the silverware");
     settings.Add("factory_exit_split", true, "Leave Alchemists area");
+    settings.SetToolTip("factory_exit_split", "Place the crafted key into the door and exit room");
 
     // Settings for Exile (Anchorites) level splits
     settings.CurrentDefaultParent = null;
@@ -298,10 +302,12 @@ split
         var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["hide_and_seek_split"];
         // Pick up coin item.
         var isPickUpCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["pick_up_coin_split"];
+        // Enter the church.
+        var isEnterChurchSplit = vars.oldPlaceId == 12 && vars.currentPlaceId == 21 && settings["enter_church_split"];
         // Pick up lens item.
         var isPickUpLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["pick_up_lens_split"];
 
-        return isHideAndSeekSplit || isPickUpCoinSplit || isPickUpLensSplit;
+        return isHideAndSeekSplit || isPickUpCoinSplit || isEnterChurchSplit || isPickUpLensSplit;
     }
 
     // Fortress (Warriors) splits
@@ -325,12 +331,12 @@ split
         var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["stealth_start_split"];
         // Exit stealth corridor room.
         var isStealthCorridorSplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && settings["stealth_corridor_split"];
-        // Exit stealth box elevator room.
-        var isStealthBoxElevatorSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["stealth_box_elevator_split"];
-        // Exit dress up room.
-        var isDressUpSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["dress_up_split"];
+        // Exit stealth storage room (with an elevator w/ 2 boxes).
+        var isStealthStorageRoomSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["stealth_storage_room_split"];
+        // Exit armory room, after disguising as a guard.
+        var isArmoryExitSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["armory_exit_split"];
 
-        return isPickUpSpearSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthBoxElevatorSplit || isDressUpSplit;
+        return isPickUpSpearSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit;
     }
 
     // Gardens (Bards) splits    
