@@ -40,7 +40,7 @@ startup
     settings.Add("fortress_splits", true, "Fortress (Warriors) splits");
 
     settings.CurrentDefaultParent = "fortress_splits";
-    settings.Add("pick_up_spear_split", true, "Pick up the spear");
+    settings.Add("spear_terminal_room_split", true, "Enter the room with the spear");
     settings.Add("stealth_start_split", true, "Start the stealth section");
     settings.Add("stealth_corridor_split", true, "Exit the stealth corridor");
     settings.Add("stealth_storage_room_split", true, "Exit the stealth storage room");
@@ -61,22 +61,15 @@ startup
     settings.Add("pick_up_windmill_torch_split", true, "Pick up the torch");
     settings.SetToolTip("pick_up_windmill_torch_split", "Pick up the torch at the windmill");
     settings.Add("gardens_exit_split", true, "Exit the Gardens level");
-    settings.SetToolTip("gardens_exit_split", "Place the torch in the door and exit room");
-
-    // Settings for Tunnels level splits
-    settings.CurrentDefaultParent = null;
-    settings.Add("tunnels_splits", true, "Tunnels splits");
-
-    settings.CurrentDefaultParent = "tunnels_splits";
     settings.Add("maze_exit_split", true, "Exit the maze");
-    settings.Add("tunnels_exit_split", true, "Exit the Tunnels level");
-    settings.SetToolTip("tunnels_exit_split", "Activate and take the elevator from Tunnels to Factory");
 
     // Settings for Factory (Alchemists) level splits
     settings.CurrentDefaultParent = null;
     settings.Add("factory_splits", true, "Factory (Alchemists) splits");
 
     settings.CurrentDefaultParent = "factory_splits";
+    settings.Add("tunnels_exit_split", true, "Exit the Tunnels level");
+    settings.SetToolTip("tunnels_exit_split", "Activate and take the elevator from Tunnels to Factory");
     settings.Add("pick_up_silverware_split", true, "Pick up the silverware");
     settings.Add("pick_up_silver_bar", true, "Pick up the silver bar");
     settings.SetToolTip("pick_up_silver_bar", "Pick up the silver bar after melting the silverware");
@@ -91,7 +84,6 @@ startup
     settings.Add("exile_npc_room_split", true, "Enter the Creator's room");
     settings.SetToolTip("exile_npc_room_split", "Enter the Creator's room after entering the code in the keypad");
     settings.Add("pick_up_exile_key_split", true, "Pick up the Exile key");
-    settings.Add("game_end_split", true, "Start the final cutscene");
 
     // Load the asl-help script
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
@@ -326,7 +318,7 @@ split
         }
 
         // Pick up spear item.
-        var isPickUpSpearSplit = vars.currentPlaceId == 7 && vars.isInventoryForcedOpen && settings["pick_up_spear_split"];
+        var isSpearTerminalRoomSplit = vars.oldPlaceId == 6 && vars.currentPlaceId == 7 && settings["spear_terminal_room_split"];
         // Enter first stealth room.
         var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["stealth_start_split"];
         // Exit stealth corridor room.
@@ -336,7 +328,7 @@ split
         // Exit armory room, after disguising as a guard.
         var isArmoryExitSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["armory_exit_split"];
 
-        return isPickUpSpearSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit;
+        return isSpearTerminalRoomSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit;
     }
 
     // Gardens (Bards) splits    
@@ -366,32 +358,29 @@ split
         return isServantDoorSplit || isEnterSewersSplit || isExitSewersSplit || isPickUpWindmillTorchSplit;
     }
 
-    // Tunnels splits
-    if (vars.oldLevelId == 3 && vars.currentLevelId == 3 && vars.currentPlaceId <= 16 && settings["tunnels_splits"])
+    // Factory (Alchemists) splits (and Maze)
+    if (vars.oldLevelId == 3)
     {
-        // Exit the maze (note: this is oftentimes considered part of the Gardens level).
-        var isMazeExitSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["maze_exit_split"];
-        // Tunnels -> Factory
-        var isTunnelExitSplit = vars.oldPlaceId == 14 && vars.currentPlaceId == 16 && settings["tunnels_exit_split"];
+        // Exit the maze (considered part of the Gardens level).
+        if (vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["gardens_splits"] && settings["maze_exit_split"])
+        {
+            return true;
+        }
 
-        return isMazeExitSplit || isTunnelExitSplit;
-    }
-
-    // Factory (Alchemists) splits
-    if (vars.oldLevelId == 3 && settings["factory_splits"])
-    {
         // Factory -> Exile
-        if (vars.currentLevelId == 4 && settings["factory_exit_split"])
+        if (vars.currentLevelId == 4 && settings["factory_splits"] && settings["factory_exit_split"])
         {
             return true;
         }
 
         // Exit early if current level is not Factory to avoid duplicate check.
-        if (vars.currentLevelId != 3)
+        if (vars.currentLevelId != 3 || !settings["factory_splits"]) // Moved factory splits check here to allow for maze split.
         {
             return false;
         }
 
+        // Tunnels -> Factory
+        var isTunnelExitSplit = vars.oldPlaceId == 14 && vars.currentPlaceId == 16 && settings["tunnels_exit_split"];
         // Pick up silverware item at canteen.
         var isPickUpSilverwareSplit = vars.currentPlaceId == 33 && vars.isInventoryForcedOpen && settings["pick_up_silverware_split"];
         // Pick up silver bar item after melting the silverware.
@@ -407,9 +396,12 @@ split
         var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && settings["exile_npc_room_split"];
         // Pick up Exile key.
         var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && settings["pick_up_exile_key_split"];
-        // Final split for player starting cutscene in final room in Exile.
-        var isFinalSplit = vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff && settings["game_end_split"];
 
-        return isExileNpcRoomSplit || isPickUpExileKeySplit || isFinalSplit;
+        return isExileNpcRoomSplit || isPickUpExileKeySplit;
+    }
+
+    // Final split for player starting cutscene in final room in Exile. Not optional
+    if (vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff) {
+        return true;
     }
 }
