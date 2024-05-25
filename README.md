@@ -5,7 +5,6 @@
 2. Place the .asl file anywhere you want, and then import it into Livesplit
     - Right-click > Edit Layout > plus button to add > Control > Scriptable Auto Splitter > Browse > select the .asl file
 3. If advanced settings appear, you'll know the installation was successful. You can customize the save slot and the splits.
-
 ## Current functionalities
 - Automatic splitting on important moments of current Any% route
 - Ability to select the save slot (currently defaults to slot 3)
