@@ -110,7 +110,8 @@ init
         vars.Helper["gameSave3PlaceId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x30, "currentPlaceId", "id");
         vars.Helper["gameSave3PortalId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x30, "currentPortalId");
 
-        vars.Helper["isPlayerMoving"] = mono.Make<bool>("GameController", "staticInstance", "playerController", "playerMove", "isMoving");
+        // lastMovementDirection is a nested Vector3, but we only need the X coordinate to see if player has moved after intro cutscene.
+        vars.Helper["playerLastMovementDirectionX"] = mono.Make<float>("GameController", "staticInstance", "playerController", "playerMove", "lastMovementDirection");
         vars.Helper["canPlayerRun"] = mono.Make<bool>("GameController", "staticInstance", "playerController", "playerMove", "canRun");
 
         vars.Helper["inventoryState"] = mono.Make<int>("GameController", "staticInstance", "inventory", "state");
@@ -226,8 +227,11 @@ start
     // Check if player moved from title screen to first cutscene.
     if (vars.isTitleScreenToNewSave)
     {
-        // Start timer when player starts moving.
-        return current.isPlayerMoving;
+        /** 
+         * Start timer when player's last movement direction changed.
+         * Checking `isMoving` or `canRun` doesn't work if player uses controller and keeps moving stick after hitting "New Game".
+         * Checking `run` doesn't work if player uses mouse and clicks close to character so they walk. */
+        return current.playerLastMovementDirectionX != 0;
     }
 
     // Otherwise, check if player moved from title screen to first room's intro cutscene.
