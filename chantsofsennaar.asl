@@ -238,7 +238,7 @@ start
     var isFreshFirstRoom = vars.currentLevelId == 0 && vars.currentPlaceId == 0 /*&& vars.currentPortalId == 0*/;  // Portal id is 0 from a new save, and 1 otherwise (e.g. go into next room and back, then save).
     var isNoLongerOnTitleScreen = DateTime.Now.Subtract(vars.lastDateTimeOnTitleScreen).TotalSeconds > 1;  // Leniency needed when resetting to title screen.
     var inCutscene = current.cursorOff;  // Cursor is off during a cutscene, even when using controller.
-    if (isFreshFirstRoom && isNoLongerOnTitleScreen /*&& inCutscene*/)
+    if (isFreshFirstRoom && isNoLongerOnTitleScreen && inCutscene)
     {
         vars.isTitleScreenToNewSave = true;
     }
