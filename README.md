@@ -1,19 +1,17 @@
-# How to use the autosplitter
-
-1. Download `asl-help` from here: https://github.com/just-ero/asl-help/blob/main/lib/asl-help
-2. Place `asl-help` in your livesplit application folder > Components
-    - E.g. Documents\Applications\LiveSplit_1.8.26\Components
-3. Place the .asl file anywhere you want, and then import it into Livesplit
+# Chants of Sennaar Autosplitter v0.1.0
+## How to install
+1. [Download](https://github.com/just-ero/asl-help/blob/main/lib/asl-help) `asl-help` and place it in your LiveSplit installation folder > Components
+    - E.g. Documents\LiveSplit_1.8.26\Components
+2. Place the .asl file anywhere you want, and then import it into Livesplit
     - Right-click > Edit Layout > plus button to add > Control > Scriptable Auto Splitter > Browse > select the .asl file
-4. In the window, there should be settings in the "Advanced" section. You **must** select your game save slot for the autosplitter to work properly.
-    - This will default to the 3rd save slot.
-
-# How it works
-## Start
-The script expects you to be on the title screen, then select "New Game". The autosplitter will start once you start moving.
-
-## Split
-The script will split whenever the place id changes (e.g. when you enter a new room) as a test. If you want to disable the testing logic, follow the comments in the .asl script under the `split` block to disable the testing logic and enable the intended logic.
-
-## Reset
-The script will reset when you go back to the title screen.
+3. If advanced settings appear, you'll know the installation was successful. You can customize the save slot and the splits.
+## Current functionalities
+- Automatic splitting on important moments of current Any% route
+- Ability to select the save slot (currently defaults to slot 3)
+## Known bugs
+- Sometimes the autpsplitter will start too early - during the first cutscene. This is related to performing gamepad inputs during that cutscene.
+  - You can avoid this by waiting with the inputs until the screen fades to black.
+  - If you encounter the bug, you can open and close the Steam overlay to be able to quit to the main menu quicker.
+## Roadmap
+- [ ] Automatic detection of the save slot
+- [ ] True Ending support 
