@@ -189,7 +189,7 @@ split
     /* This only works for Any% category. */
 
     // Crypt splits
-    if (vars.oldLevelId == 0 && vars.currentLevelId == 0 && vars.currentPlaceId <= 6 && settings["a1ss_crypt"])
+    if (vars.oldLevelId == 0 && vars.currentLevelId == 0 && vars.currentPlaceId <= 6)
     {
         // Finish the 1st journal entry and exit the room.
         var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4 && settings["a1s_first_journal"];
@@ -200,7 +200,7 @@ split
     }
 
     // Abbey (Devotees) splits
-    if (vars.oldLevelId == 0 && settings["a2ss_abbey"])
+    if (vars.oldLevelId == 0)
     {
         // Abbey -> Fortress.
         if (vars.currentLevelId == 1 && settings["a2s_abbey_exit"])
@@ -227,7 +227,7 @@ split
     }
 
     // Fortress (Warriors) splits
-    if (vars.oldLevelId == 1 && settings["a3ss_fortress"])
+    if (vars.oldLevelId == 1)
     {
         // Fortress -> Gardens.
         if (vars.currentLevelId == 2 && settings["a3s_fortress_exit"])
@@ -256,7 +256,7 @@ split
     }
 
     // Gardens (Bards) splits    
-    if (vars.oldLevelId == 2 && vars.currentLevelId == 2 && settings["a4ss_gardens"])
+    if (vars.oldLevelId == 2 && vars.currentLevelId == 2)
     {
         // Exit through the servant's door.
         var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && settings["a4s_servant_door"];
@@ -274,15 +274,9 @@ split
     if (vars.oldLevelId == 3)
     {
         // Exit the maze (considered part of the Gardens level).
-        if (vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["a4ss_gardens"] && settings["a4s_maze_exit"])
+        if (vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["a4s_maze_exit"])
         {
             return true;
-        }
-
-        // Exit early if factory splits are not enabled.
-        if (!settings["a5ss_factory"])
-        {
-            return false;
         }
 
         // Factory -> Exile.
@@ -314,12 +308,6 @@ split
         if (vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff)
         {
             return true;
-        }
-
-        // Exit early if exile splits are not enabled.
-        if (!settings["a6ss_exile"])
-        {
-            return false;
         }
 
         // Enter the Creator's room after entering the 3-glyph code in the keypad.
