@@ -1,4 +1,9 @@
+
 # Chants of Sennaar Autosplitter v0.1.2
+
+## Known bugs
+None as of 27th May 2024
+
 ## How to install
 1. [Download](https://github.com/just-ero/asl-help/raw/main/lib/asl-help) `asl-help` and place it in your LiveSplit installation folder > Components
     - E.g. Documents\LiveSplit_1.8.26\Components
@@ -9,8 +14,7 @@
 ## Current functionalities
 - Automatic splitting on important moments of current Any% route
 - Ability to select the save slot (currently defaults to slot 3)
-## Known bugs
-None as of 27th May 2024
+- 
 ## Roadmap
 - [ ] Automatic detection of the save slot
 - [ ] True Ending support 
