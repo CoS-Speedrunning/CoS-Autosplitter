@@ -22,7 +22,7 @@
         <Setting Id="a3ss_fortress" State="true" Label="Fortress (Warriors) Any% splits">
             <Setting Id="a3s_spear_room" State="true" Label="Exit the room with the spear" />
             <Setting Id="a3s_stealth_start" State="true" Label="Start the stealth section" />
-            <Setting Id="a3s_stealth_corridor" State="true" Label="Exit the stealth corridor" />
+            <Setting Id="a3s_stealth_corridor" State="true" Label="Exit the stealth corridor" ToolTip="Exit the long stealth corridor (has a gong)" />
             <Setting Id="a3s_stealth_storage_room" State="true" Label="Exit the stealth storage room" ToolTip="Exit the storage room (has a elevator with 2 boxes on it and a guard near the exit)" />
             <Setting Id="a3s_armory_exit" State="true" Label="Exit the armory" ToolTip="Exit the armory after disguising as a guard" />
             <Setting Id="a3s_fortress_exit" State="true" Label="Exit the Fortress level" ToolTip="Take the elevator to the Gardens" />
@@ -30,8 +30,8 @@
 
         <Setting Id="a4ss_gardens" State="true" Label="Gardens (Bards) Any% splits">
             <Setting Id="a4s_servant_door" State="true" Label="Exit through the servant's door" />
-            <Setting Id="a4s_enter_sewers" State="true" Label="Enter the sewers" />
-            <Setting Id="a4s_exit_sewers" State="true" Label="Exit the sewers" />
+            <Setting Id="a4s_enter_sewers" State="true" Label="Enter the sewers" ToolTip="Enter the sewers to get the compass" />
+            <Setting Id="a4s_exit_sewers" State="true" Label="Exit the sewers" ToolTip="Exit the sewers after getting the compass" />
             <Setting Id="a4s_pick_up_windmill_torch" State="true" Label="Pick up the torch at the windmill" />
             <Setting Id="a4s_maze_exit" State="true" Label="Exit the maze" ToolTip="Note: the maze is technically part of the Factory level, but we consider it as part of the Gardens level" />
         </Setting>
@@ -45,7 +45,7 @@
 
         <Setting Id="a6ss_exile" State="true" Label="Exile (Anchorites) Any% splits">
             <Setting Id="a6s_exile_npc_room" State="true" Label="Enter the Creator's room" ToolTip="Enter the Creator's room after entering the code in the keypad" />
-            <Setting Id="a6s_pick_up_exile_key" State="true" Label="Pick up the Exile key" />
+            <Setting Id="a6s_pick_up_exile_key" State="true" Label="Pick up the Exile key" ToolTip="Pick up the Exile key during the cutscene with the Creator" />
         </Setting>
     </Setting>
 </Settings>
