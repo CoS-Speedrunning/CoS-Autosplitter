@@ -4,89 +4,10 @@ state("Chants Of Sennaar", "v.1.0.0.9")
 
 startup
 {
-    // Settings for game save slots.
-    settings.Add("game_save_slot", true, "[Required, select 1] Game save slot");
-    settings.SetToolTip("game_save_slot", "The save slot that will be used for speedruns. Your level/place ids are determined from the save data.");
-
-    settings.CurrentDefaultParent = "game_save_slot";
-    settings.Add("save_slot_1", false, "Save slot 1");
-    settings.Add("save_slot_2", false, "Save slot 2");
-    settings.Add("save_slot_3", true, "Save slot 3");
-
-    // Settings for Crypt level splits.
-    settings.CurrentDefaultParent = null;
-    settings.Add("crypt_splits", true, "Crypt splits");
-
-    settings.CurrentDefaultParent = "crypt_splits";
-    settings.Add("first_journal_split", true, "1st journal entry");
-    settings.SetToolTip("first_journal_split", "Complete the 1st journal entry and exit room");
-    settings.Add("crypt_exit_split", true, "Exit the Crypt level");
-    settings.SetToolTip("crypt_exit_split", "Finish the water locks puzzle and exit room");
-
-    // Settings for Abbey (Devotees) level splits 
-    settings.CurrentDefaultParent = null;
-    settings.Add("abbey_splits", true, "Abbey (Devotees) splits");
-
-    settings.CurrentDefaultParent = "abbey_splits";
-    settings.Add("hide_and_seek_split", true, "Finish hide and seek");
-    settings.SetToolTip("hide_and_seek_split", "Finish hide and seek and enter the stealth room");
-    settings.Add("pick_up_coin_split", true, "Pick up the coin");
-    settings.Add("enter_church_split", true, "Enter the church");
-    settings.Add("pick_up_lens_split", true, "Pick up the lens");
-    settings.Add("abbey_exit_split", true, "Exit the Abbey level");
-
-    // Settings for Fortress (Warriors) level splits
-    settings.CurrentDefaultParent = null;
-    settings.Add("fortress_splits", true, "Fortress (Warriors) splits");
-
-    settings.CurrentDefaultParent = "fortress_splits";
-    settings.Add("spear_terminal_room_split", true, "Exit the room with the spear");
-    settings.Add("stealth_start_split", true, "Start the stealth section");
-    settings.Add("stealth_corridor_split", true, "Exit the stealth corridor");
-    settings.Add("stealth_storage_room_split", true, "Exit the stealth storage room");
-    settings.SetToolTip("stealth_storage_room_split", "Exit the storage room (has a elevator with 2 boxes on it and a guard near the exit)");
-    settings.Add("armory_exit_split", true, "Exit the armory");
-    settings.SetToolTip("armory_exit_split", "Exit the armory after disguising as a guard");
-    settings.Add("fortress_exit_split", true, "Exit the Fortress level");
-    settings.SetToolTip("fortress_exit_split", "Take the elevator to the Gardens");
-
-    // Settings for Gardens (Bards) level splits
-    settings.CurrentDefaultParent = null;
-    settings.Add("gardens_splits", true, "Gardens (Bards) splits");
-
-    settings.CurrentDefaultParent = "gardens_splits";
-    settings.Add("servant_door_split", true, "Exit through the servant's door");
-    settings.Add("enter_sewers_split", true, "Enter the sewers");
-    settings.Add("exit_sewers_split", true, "Exit the sewers");
-    settings.Add("pick_up_windmill_torch_split", true, "Pick up the torch");
-    settings.SetToolTip("pick_up_windmill_torch_split", "Pick up the torch at the windmill");
-    settings.Add("maze_exit_split", true, "Exit the maze");
-
-    // Settings for Factory (Alchemists) level splits
-    settings.CurrentDefaultParent = null;
-    settings.Add("factory_splits", true, "Factory (Alchemists) splits");
-
-    settings.CurrentDefaultParent = "factory_splits";
-    settings.Add("tunnels_exit_split", true, "Exit the Tunnels level");
-    settings.SetToolTip("tunnels_exit_split", "Activate and take the elevator from Tunnels to Factory");
-    settings.Add("pick_up_silverware_split", true, "Pick up the silverware");
-    settings.Add("pick_up_silver_bar", true, "Pick up the silver bar");
-    settings.SetToolTip("pick_up_silver_bar", "Pick up the silver bar after melting the silverware");
-    settings.Add("factory_exit_split", true, "Exit the Factory level");
-    settings.SetToolTip("factory_exit_split", "Place the crafted key into the door and exit room");
-
-    // Settings for Exile (Anchorites) level splits
-    settings.CurrentDefaultParent = null;
-    settings.Add("exile_splits", true, "Exile (Anchorites) splits");
-
-    settings.CurrentDefaultParent = "exile_splits";
-    settings.Add("exile_npc_room_split", true, "Enter the Creator's room");
-    settings.SetToolTip("exile_npc_room_split", "Enter the Creator's room after entering the code in the keypad");
-    settings.Add("pick_up_exile_key_split", true, "Pick up the Exile key");
-
-    // Load the asl-help script
+    // Load the asl-help script and settings
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Chants of Sennaar";
+    vars.Helper.Settings.CreateFromXml("Components/chantsofsennaar.Settings.xml");
 }
 
 init
@@ -399,7 +320,5 @@ split
         var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && settings["pick_up_exile_key_split"];
 
         return isExileNpcRoomSplit || isPickUpExileKeySplit;
-    }
-
-    
+    }    
 }

@@ -1,0 +1,51 @@
+<Settings>
+    <Setting Id="game_save_slot" State="true" Label="[Required, select 1] Game save slot" ToolTip="The save slot that will be used for speedruns. Your level/place ids are determined from the save data.">
+        <Setting Id="save_slot_1" State="false" Label="Save slot 1" />
+        <Setting Id="save_slot_2" State="false" Label="Save slot 2" />
+        <Setting Id="save_slot_3" State="true" Label="Save slot 3" />
+    </Setting>
+
+    <Setting Id="any_category" State="true" Label="Any% splits">
+        <Setting Id="crypt_any_splits" State="true" Label="Crypt Any% splits">
+            <Setting Id="first_journal_any_split" State="true" Label="1st journal entry" ToolTip="Complete the 1st journal entry and exit room" />
+            <Setting Id="crypt_exit_any_split" State="true" Label="Exit the Crypt level" ToolTip="Finish the water locks puzzle and exit room" />
+        </Setting>
+
+        <Setting Id="abbey_any_splits" State="true" Label="Abbey (Devotees) Any% splits">
+            <Setting Id="hide_and_seek_any_split" State="true" Label="Finish hide and seek" ToolTip="Finish hide and seek and enter the stealth room" />
+            <Setting Id="pick_up_coin_any_split" State="true" Label="Pick up the coin" />
+            <Setting Id="enter_church_any_split" State="true" Label="Enter the church" />
+            <Setting Id="pick_up_lens_any_split" State="true" Label="Pick up the lens" />
+            <Setting Id="abbey_exit_any_split" State="true" Label="Exit the Abbey level" ToolTip="Exit through the Warrior door" />
+        </Setting>
+
+        <Setting Id="fortress_any_splits" State="true" Label="Fortress (Warriors) Any% splits">
+            <Setting Id="spear_room_any_split" State="true" Label="Exit the room with the spear" />
+            <Setting Id="stealth_start_any_split" State="true" Label="Start the stealth section" />
+            <Setting Id="stealth_corridor_any_split" State="true" Label="Exit the stealth corridor" />
+            <Setting Id="stealth_storage_room_any_split" State="true" Label="Exit the stealth storage room" ToolTip="Exit the storage room (has a elevator with 2 boxes on it and a guard near the exit)" />
+            <Setting Id="armory_exit_any_split" State="true" Label="Exit the armory" ToolTip="Exit the armory after disguising as a guard" />
+            <Setting Id="fortress_exit_any_split" State="true" Label="Exit the Fortress level" ToolTip="Take the elevator to the Gardens" />
+        </Setting>
+
+        <Setting Id="gardens_any_splits" State="true" Label="Gardens (Bards) Any% splits">
+            <Setting Id="servant_door_any_split" State="true" Label="Exit through the servant's door" />
+            <Setting Id="enter_sewers_any_split" State="true" Label="Enter the sewers" />
+            <Setting Id="exit_sewers_any_split" State="true" Label="Exit the sewers" />
+            <Setting Id="pick_up_windmill_torch_any_split" State="true" Label="Pick up the torch at the windmill" />
+            <Setting Id="maze_exit_any_split" State="true" Label="Exit the maze" ToolTip="Note: the maze is technically part of the Factory level, but we consider it as part of the Gardens level" />
+        </Setting>
+
+        <Setting Id="factory_any_splits" State="true" Label="Factory (Alchemists) Any% splits">
+            <Setting Id="tunnels_exit_any_split" State="true" Label="Exit the Tunnels level" ToolTip="Activate and take the elevator from Tunnels to Factory" />
+            <Setting Id="pick_up_silverware_any_split" State="true" Label="Pick up the silverware" ToolTip="Pick up the silverware in the cafeteria" />
+            <Setting Id="pick_up_silver_bar_any_split" State="true" Label="Pick up the silver bar" ToolTip="Pick up the silver bar after melting the silverware" />
+            <Setting Id="factory_exit_any_split" State="true" Label="Exit the Factory level" ToolTip="Place the crafted key into the door and exit through the door" />
+        </Setting>
+
+        <Setting Id="exile_any_splits" State="true" Label="Exile (Anchorites) Any% splits">
+            <Setting Id="exile_npc_room_any_split" State="true" Label="Enter the Creator's room" ToolTip="Enter the Creator's room after entering the code in the keypad" />
+            <Setting Id="pick_up_exile_key_any_split" State="true" Label="Pick up the Exile key" />
+        </Setting>
+    </Setting>
+</Settings>
