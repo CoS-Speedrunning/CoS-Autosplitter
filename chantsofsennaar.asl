@@ -126,6 +126,7 @@ onReset
     vars.isTitleScreenToNewSave = false;
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
+    vars.isCanteenTimerTriggered = false;
 }
 
 start
@@ -163,8 +164,6 @@ start
     {
         vars.isTitleScreenToNewSave = true;
     }
-
-    // IMPORTANT!!! either inCutscene or currentPortalId causes the autosplitter not to start
 }
 
 onStart
@@ -174,6 +173,7 @@ onStart
     vars.isTitleScreenToNewSave = false;
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
+    vars.isCanteenTimerTriggered = false;
 }
 
 split
@@ -260,14 +260,22 @@ split
     {
         // Exit the maze.
         var isMazeExitSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["a4s_maze_exit"];
-        // Exit the Tunnels level.
-        var isTunnelExitSplit = vars.oldPlaceId == 14 && vars.currentPlaceId == 16 && settings["a5s_tunnels_exit"];
+        // Escape the monster.
+        var isEscapeMonsterSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["a5s_escape_monster"];
+        // Trigger the canteen timer (i.e. enter the canteen foyer for the 1st time).
+        var isTriggerCanteenTimerSplit = vars.oldPlaceId == 31 && vars.currentPlaceId == 32 && !vars.isCanteenTimerTriggered && settings["a5s_trigger_canteen_timer"];
         // Pick up silverware item at canteen.
         var isPickUpSilverwareSplit = vars.currentPlaceId == 33 && vars.isInventoryForcedOpen && settings["a5s_pick_up_silverware"];
         // Pick up silver bar item after melting the silverware.
         var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && settings["a5s_pick_up_silver_bar"];
 
-        return isMazeExitSplit || isTunnelExitSplit || isPickUpSilverwareSplit || isPickUpSilverBarSplit;
+        // Set vars.isCanteenTimerTriggered so split isn't triggered again when entering the canteen.
+        if (isTriggerCanteenTimerSplit)
+        {
+            vars.isCanteenTimerTriggered = true;
+        }
+
+        return isMazeExitSplit || isEscapeMonsterSplit || isTriggerCanteenTimerSplit || isPickUpSilverwareSplit || isPickUpSilverBarSplit;
     }
 
     // Factory -> Exile.

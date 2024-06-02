@@ -37,7 +37,8 @@
         </Setting>
 
         <Setting Id="a5ss_factory" State="true" Label="Factory (Alchemists) Any% splits">
-            <Setting Id="a5s_tunnels_exit" State="true" Label="Exit the Tunnels level" ToolTip="Activate and take the elevator from Tunnels to Factory" />
+            <Setting Id="a5s_escape_monster" State="true" Label="Escape the monster" ToolTip="Escape the monster and enter the room to activate the elevator" />
+            <Setting Id="a5s_trigger_canteen_timer" State="true" Label="Trigger the canteen timer" ToolTip="Trigger the canteen timer by entering the foyer. The canteen should open in ~3min30s." />
             <Setting Id="a5s_pick_up_silverware" State="true" Label="Pick up the silverware" ToolTip="Pick up the silverware in the canteen" />
             <Setting Id="a5s_pick_up_silver_bar" State="true" Label="Pick up the silver bar" ToolTip="Pick up the silver bar after melting the silverware" />
             <Setting Id="a5s_factory_exit" State="true" Label="Exit the Factory level" ToolTip="Place the crafted key into the door and exit through the door" />
