@@ -6,16 +6,16 @@
     </Setting>
 
     <Setting Id="any_category" State="true" Label="Any% splits">
-        <Setting Id="a1ss_crypts" State="true" Label="Crypt Any% splits">
-            <Setting Id="a1s_first_journal" State="true" Label="1st journal entry" ToolTip="Finish the 1st journal entry and exit room" />
-            <Setting Id="a1s_crypt_exit" State="true" Label="Exit the Crypt level" ToolTip="Finish the water locks puzzle and exit room" />
+        <Setting Id="a1ss_crypt" State="true" Label="Crypt Any% splits">
+            <Setting Id="a1s_first_journal" State="true" Label="1st journal entry" ToolTip="Finish the 1st journal entry and exit the room" />
+            <Setting Id="a1s_crypt_exit" State="true" Label="Exit the Crypt level" ToolTip="Finish the water locks puzzle and exit the room" />
         </Setting>
 
         <Setting Id="a2ss_abbey" State="true" Label="Abbey (Devotees) Any% splits">
             <Setting Id="a2s_hide_and_seek" State="true" Label="Finish hide and seek" ToolTip="Finish hide and seek and enter the stealth room" />
-            <Setting Id="a2s_pick_up_coin" State="true" Label="Pick up the coin" />
+            <Setting Id="a2s_pick_up_coin" State="true" Label="Pick up the coin" ToolTip="Pick up the coin after finishing the bed puzzle" />
             <Setting Id="a2s_enter_church" State="true" Label="Enter the church" />
-            <Setting Id="a2s_pick_up_lens" State="true" Label="Pick up the lens" />
+            <Setting Id="a2s_pick_up_lens" State="true" Label="Pick up the lens" ToolTip="Pick up the lens after getting the key from the jar and opening the door" />
             <Setting Id="a2s_abbey_exit" State="true" Label="Exit the Abbey level" ToolTip="Exit through the Warrior door" />
         </Setting>
 

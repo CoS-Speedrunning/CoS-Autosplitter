@@ -189,48 +189,48 @@ split
     /* This only works for Any% category. */
 
     // Crypt splits
-    if (vars.oldLevelId == 0 && vars.currentLevelId == 0 && vars.currentPlaceId <= 6 && settings["crypt_splits"])
+    if (vars.oldLevelId == 0 && vars.currentLevelId == 0 && vars.currentPlaceId <= 6 && settings["a1ss_crypt"])
     {
-        // Complete the 1st journal entry and leave the room.
-        var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4 && settings["first_journal_split"];
-        // Crypt -> Abbey
-        var isCryptExitSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["crypt_exit_split"];
+        // Finish the 1st journal entry and exit the room.
+        var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4 && settings["a1s_first_journal"];
+        // Crypt -> Abbey (finish the water locks puzzle and exit the room)
+        var isCryptExitSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["a1s_crypt_exit"];
 
         return isFirstJournalSplit || isCryptExitSplit;
     }
 
     // Abbey (Devotees) splits
-    if (vars.oldLevelId == 0 && settings["abbey_splits"])
+    if (vars.oldLevelId == 0 && settings["a2ss_abbey"])
     {
         // Abbey -> Fortress.
-        if (vars.currentLevelId == 1 && settings["abbey_exit_split"])
+        if (vars.currentLevelId == 1 && settings["a2s_abbey_exit"])
         {
             return true;
         }
 
-        // Exit early if current level is not Abbey to avoid duplicate check.
+        // Exit early if current level is not Abbey to avoid duplicate checks below.
         if (vars.currentLevelId != 0)
         {
             return false;
         }
 
-        // Finish hide and seek.
-        var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["hide_and_seek_split"];
-        // Pick up coin item.
-        var isPickUpCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["pick_up_coin_split"];
+        // Finish hide and seek and enter the stealth room.
+        var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["a2s_hide_and_seek"];
+        // Pick up the coin item by finishing the bed puzzle.
+        var isPickUpCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["a2s_pick_up_coin"];
         // Enter the church.
-        var isEnterChurchSplit = vars.oldPlaceId == 12 && vars.currentPlaceId == 21 && settings["enter_church_split"];
-        // Pick up lens item.
-        var isPickUpLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["pick_up_lens_split"];
+        var isEnterChurchSplit = vars.oldPlaceId == 12 && vars.currentPlaceId == 21 && settings["a2s_enter_church"];
+        // Pick up the lens item after getting the key from the jar and opening the door.
+        var isPickUpLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["a2s_pick_up_lens"];
 
         return isHideAndSeekSplit || isPickUpCoinSplit || isEnterChurchSplit || isPickUpLensSplit;
     }
 
     // Fortress (Warriors) splits
-    if (vars.oldLevelId == 1 && settings["fortress_splits"])
+    if (vars.oldLevelId == 1 && settings["a3ss_fortress"])
     {
         // Fortress -> Gardens.
-        if (vars.currentLevelId == 2 && settings["fortress_exit_split"])
+        if (vars.currentLevelId == 2 && settings["a3s_fortress_exit"])
         {
             return true;
         }
@@ -241,62 +241,68 @@ split
             return false;
         }
 
-        // Pick up spear item.
-        var isSpearTerminalRoomSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["spear_terminal_room_split"];
-        // Enter first stealth room.
-        var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["stealth_start_split"];
-        // Exit stealth corridor room.
-        var isStealthCorridorSplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && settings["stealth_corridor_split"];
-        // Exit stealth storage room (with an elevator w/ 2 boxes).
-        var isStealthStorageRoomSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["stealth_storage_room_split"];
-        // Exit armory room, after disguising as a guard.
-        var isArmoryExitSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["armory_exit_split"];
+        // Exit the room with the spear.
+        var isSpearRoomSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["a3s_spear_room"];
+        // Enter the first stealth room.
+        var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["a3s_stealth_start"];
+        // Exit the stealth corridor.
+        var isStealthCorridorSplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && settings["a3s_stealth_corridor"];
+        // Exit the stealth storage room (has an elevator wtih 2 boxes).
+        var isStealthStorageRoomSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["a3s_stealth_storage_room"];
+        // Exit the armory room after disguising as a guard.
+        var isArmoryExitSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["a3s_armory_exit"];
 
-        return isSpearTerminalRoomSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit;
+        return isSpearRoomSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit;
     }
 
     // Gardens (Bards) splits    
-    if (vars.oldLevelId == 2 && vars.currentLevelId == 2 && settings["gardens_splits"])
+    if (vars.oldLevelId == 2 && vars.currentLevelId == 2 && settings["a4ss_gardens"])
     {
-        // Exit through door that servant opens.
-        var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && settings["servant_door_split"];
+        // Exit through the servant's door.
+        var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && settings["a4s_servant_door"];
         // Enter sewers.
-        var isEnterSewersSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 11 && settings["enter_sewers_split"];
+        var isEnterSewersSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 11 && settings["a4s_enter_sewers"];
         // Exit sewers.
-        var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && settings["exit_sewers_split"];
+        var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && settings["a4s_exit_sewers"];
         // Pick up torch item at windmill.
-        var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["pick_up_windmill_torch_split"];
+        var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["a4s_pick_up_windmill_torch"];
 
         return isServantDoorSplit || isEnterSewersSplit || isExitSewersSplit || isPickUpWindmillTorchSplit;
     }
 
-    // Factory (Alchemists) splits (and Maze)
+    // Factory (Alchemists) splits (+ Maze)
     if (vars.oldLevelId == 3)
     {
         // Exit the maze (considered part of the Gardens level).
-        if (vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["gardens_splits"] && settings["maze_exit_split"])
+        if (vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["a4ss_gardens"] && settings["a4s_maze_exit"])
         {
             return true;
         }
 
-        // Factory -> Exile
-        if (vars.currentLevelId == 4 && settings["factory_splits"] && settings["factory_exit_split"])
+        // Exit early if factory splits are not enabled.
+        if (!settings["a5ss_factory"])
+        {
+            return false;
+        }
+
+        // Factory -> Exile.
+        if (vars.currentLevelId == 4 && settings["a5s_factory_exit"])
         {
             return true;
         }
 
         // Exit early if current level is not Factory to avoid duplicate check.
-        if (vars.currentLevelId != 3 || !settings["factory_splits"]) // Moved factory splits check here to allow for maze split.
+        if (vars.currentLevelId != 3)
         {
             return false;
         }
 
         // Tunnels -> Factory
-        var isTunnelExitSplit = vars.oldPlaceId == 14 && vars.currentPlaceId == 16 && settings["tunnels_exit_split"];
+        var isTunnelExitSplit = vars.oldPlaceId == 14 && vars.currentPlaceId == 16 && settings["a5s_tunnels_exit"];
         // Pick up silverware item at canteen.
-        var isPickUpSilverwareSplit = vars.currentPlaceId == 33 && vars.isInventoryForcedOpen && settings["pick_up_silverware_split"];
+        var isPickUpSilverwareSplit = vars.currentPlaceId == 33 && vars.isInventoryForcedOpen && settings["a5s_pick_up_silverware"];
         // Pick up silver bar item after melting the silverware.
-        var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && settings["pick_up_silver_bar"];
+        var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && settings["a5s_pick_up_silver_bar"];
 
         return isTunnelExitSplit || isPickUpSilverwareSplit || isPickUpSilverBarSplit;
     }
@@ -304,20 +310,22 @@ split
     // Exile (Anchorites) splits
     if (vars.oldLevelId == 4 && vars.currentLevelId == 4)
     {   
-        // Final split for player starting cutscene in final room in Exile. Not optional
-        if (vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff) {
+        // Final split for player starting cutscene in final room in Exile. Not optional.
+        if (vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff)
+        {
             return true;
         }
 
-        // Exit early if splits not selected
-        if (!settings["exile_splits"])
+        // Exit early if exile splits are not enabled.
+        if (!settings["a6ss_exile"])
         {
             return false;
         }
+
         // Enter the Creator's room after entering the 3-glyph code in the keypad.
-        var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && settings["exile_npc_room_split"];
+        var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && settings["a6s_exile_npc_room"];
         // Pick up Exile key.
-        var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && settings["pick_up_exile_key_split"];
+        var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && settings["a6s_pick_up_exile_key"];
 
         return isExileNpcRoomSplit || isPickUpExileKeySplit;
     }    
