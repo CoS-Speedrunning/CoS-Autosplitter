@@ -83,7 +83,6 @@ update
         vars.oldPlaceId = old.gameSave1PlaceId;
         vars.currentLevelId = current.gameSave1LevelId;
         vars.currentPlaceId = current.gameSave1PlaceId;
-        vars.currentPortalId = current.gameSave1PortalId;
     }
     else if (vars.SaveSlotNumber == 2)
     {
@@ -91,7 +90,6 @@ update
         vars.oldPlaceId = old.gameSave2PlaceId;
         vars.currentLevelId = current.gameSave2LevelId;
         vars.currentPlaceId = current.gameSave2PlaceId;
-        vars.currentPortalId = current.gameSave2PortalId;
     }
     else if (vars.SaveSlotNumber == 3)
     {
@@ -99,7 +97,6 @@ update
         vars.oldPlaceId = old.gameSave3PlaceId;
         vars.currentLevelId = current.gameSave3LevelId;
         vars.currentPlaceId = current.gameSave3PlaceId;
-        vars.currentPortalId = current.gameSave3PortalId;
     }
 
     /* The next section checks if inventory needs to be forced open, so we can split when the inventory is actually open. */
@@ -140,6 +137,7 @@ onReset
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
     vars.isCanteenTimerTriggered = false;
+    vars.SaveSlotNumber = 0;
 }
 
 start
