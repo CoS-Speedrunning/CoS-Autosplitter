@@ -284,6 +284,7 @@ split
         var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && (settings["a5s_pick_up_silver_bar"] || settings["t5s_pick_up_silver_bar"]);
 
         // True Ending - Bards - Alchemists split
+        isBardAlchSplit = vars.currentPlaceId == 19 && old.isTerminalLinkComplete == 0 && current.isTerminalLinkComplete > 0  && settings["t7s_bard_alch"];
 
         // Set vars.isCanteenTimerTriggered so split isn't triggered again when entering the canteen.
         if (isTriggerCanteenTimerSplit)
@@ -308,8 +309,10 @@ split
         var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && settings["a6s_exile_npc_room"];
         // Pick up Exile key.
         var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && settings["a6s_pick_up_exile_key"];
-        // Final split for player starting cutscene in final room in Exile. Not optional. (is that fake tower for true ending?)
+        // Final split (not optional) for Any% category. Fake tower split for True Ending category
         var isSadTowerSplit = vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff && (settings["any_category"] || settings["t7s_fake_tower"]);
+        // Final split (not optional) for True Ending category
+        var isHappyTowerSplit = vars.currentPlaceId == 3 && !current.canPlayerRun && !old.cursorOff && current.cursorOff && settings["true_ending_category"];
 
         /* Laboratories True Ending splits */
         var isAbbeyLab = vars.oldPlaceId == 9 && vars.currentPlaceId == 16 && settings["a7s_abbey_lab"];
@@ -317,8 +320,20 @@ split
         var isGardensLab = vars.oldPlaceId == 9 && vars.currentPlaceId == 18 && settings["a7s_gardens_lab"];
         var isFactoryLab = vars.oldPlaceId == 9 && vars.currentPlaceId == 19 && settings["a7s_factory_lab"];
 
-        return isExileNpcRoomSplit || isPickUpExileKeySplit || isSadTowerSplit || isAbbeyLab || isFortressLab || isGardensLab || isFactoryLab;
+        return isExileNpcRoomSplit || isPickUpExileKeySplit || isSadTowerSplit || isHappyTowerSplit || isAbbeyLab || isFortressLab || isGardensLab || isFactoryLab;
     }
 
-    
+    // Simulation splits
+    if (vars.oldLevelId == 5 && vars.currentLevelId == 5)
+    {
+        var isTerminal1Split = vars.oldPlaceId == 4 && vars.newPlaceId == 7 && settings["a8s_terminal_1"];
+        var isTerminal2Split = vars.oldPlaceId == 11 && vars.newPlaceId == 12 && settings["a8s_terminal_1"];
+        var isTerminal3Split = vars.oldPlaceId == 13 && vars.newPlaceId == 16 && settings["a8s_terminal_1"];
+    }
+
+    // Simuation end
+    if (vars.oldLevelId == 5 && vars.currentLevelId == 4 && settings["a8s_exile_shutdown"])
+    {
+        return true;
+    }
 }

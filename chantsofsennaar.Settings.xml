@@ -110,7 +110,7 @@
             <Setting Id="t8s_terminal_1" State="false" Label="Simulation Terminal 1" />
             <Setting Id="t8s_terminal_2" State="false" Label="Simulation Terminal 2" />
             <Setting Id="t8s_terminal_3" State="false" Label="Simulation Terminal 3" />
-            <Setting Id="t8s_monster" State="false" Label="Monster escaped" />
+            <Setting Id="t8s_exile_shutdown" State="false" Label="Exile shut down" />
         </Setting>
     </Setting>
 </Settings>
