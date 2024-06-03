@@ -53,12 +53,31 @@ init
     // Gets whether the inventory is *actually* forced open.
     // The split block should check this variable to see if an item is picked up.
     vars.isInventoryForcedOpen = false;
+
+    // Automatically detects the save slot - checks all variables and switches to checking only one when detects a change
+    // 0 means no saveslot has been chosen
+    vars.SaveSlotNumber = 0;
 }
 
 update
 {
-    // Determine save slot based on setting, and populate vars with old and current level/place ids.
-    if (settings["save_slot_1"] && !settings["save_slot_2"] && !settings["save_slot_3"])
+    // Determine save slot if we moved from spawnpoint to room 2 on that saveslot
+    if (vars.SaveSlotNumber == 0)
+    {
+        if (old.gameSave1PortalId == 0 && old.gameSave1LevelId == 0 && old.gameSave1PlaceId == 0 && current.gameSave1LevelId == 0 && current.gameSave1PlaceId == 1)
+        {  
+            vars.SaveSlotNumber = 1;
+        }
+        else if (old.gameSave2PortalId == 0 && old.gameSave2LevelId == 0 && old.gameSave2PlaceId == 0 && current.gameSave2LevelId == 0 && current.gameSave2PlaceId == 1)
+        {  
+            vars.SaveSlotNumber = 2;
+        }
+        else if (old.gameSave3PortalId == 0 && old.gameSave3LevelId == 0 && old.gameSave3PlaceId == 0 && current.gameSave3LevelId == 0 && current.gameSave3PlaceId == 1)
+        {  
+            vars.SaveSlotNumber = 3;
+        }
+    }
+    if (vars.SaveSlotNumber == 1)
     {
         vars.oldLevelId = old.gameSave1LevelId;
         vars.oldPlaceId = old.gameSave1PlaceId;
@@ -66,7 +85,7 @@ update
         vars.currentPlaceId = current.gameSave1PlaceId;
         vars.currentPortalId = current.gameSave1PortalId;
     }
-    else if (!settings["save_slot_1"] && settings["save_slot_2"] && !settings["save_slot_3"])
+    else if (vars.SaveSlotNumber == 2)
     {
         vars.oldLevelId = old.gameSave2LevelId;
         vars.oldPlaceId = old.gameSave2PlaceId;
@@ -74,19 +93,13 @@ update
         vars.currentPlaceId = current.gameSave2PlaceId;
         vars.currentPortalId = current.gameSave2PortalId;
     }
-    else if (!settings["save_slot_1"] && !settings["save_slot_2"] && settings["save_slot_3"])
+    else if (vars.SaveSlotNumber == 3)
     {
         vars.oldLevelId = old.gameSave3LevelId;
         vars.oldPlaceId = old.gameSave3PlaceId;
         vars.currentLevelId = current.gameSave3LevelId;
         vars.currentPlaceId = current.gameSave3PlaceId;
         vars.currentPortalId = current.gameSave3PortalId;
-    }
-    else
-    {
-        // If setting config is invalid, don't run autosplitter.
-        print("Save slot config is invalid, autosplitter will not run.");
-        return false;
     }
 
     /* The next section checks if inventory needs to be forced open, so we can split when the inventory is actually open. */
@@ -157,10 +170,9 @@ start
     }
 
     // Otherwise, check if player moved from title screen to first room's intro cutscene.
-    var isFreshFirstRoom = vars.currentLevelId == 0 && vars.currentPlaceId == 0 /*&& vars.currentPortalId == 0*/;  // Portal id is 0 from a new save, and 1 otherwise (e.g. go into next room and back, then save).
     var isNoLongerOnTitleScreen = DateTime.Now.Subtract(vars.lastDateTimeOnTitleScreen).TotalSeconds > 1;  // Leniency needed when resetting to title screen.
     var inCutscene = current.cursorOff;  // Cursor is off during a cutscene, even when using controller.
-    if (isFreshFirstRoom && isNoLongerOnTitleScreen && inCutscene)
+    if (isNoLongerOnTitleScreen && inCutscene)
     {
         vars.isTitleScreenToNewSave = true;
     }
