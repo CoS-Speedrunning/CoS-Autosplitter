@@ -2,7 +2,7 @@
 # Chants of Sennaar Autosplitter v0.2.0
 
 ## Known bugs
-None as of 4th June 2024
+- Some splits will trigger multiple times during true ending run
 
 ## How to install
 1. [Download](https://github.com/just-ero/asl-help/raw/main/lib/asl-help) `asl-help` and place it in your LiveSplit installation folder > Components
