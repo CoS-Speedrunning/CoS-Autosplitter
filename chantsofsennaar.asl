@@ -38,7 +38,8 @@ init
 
         vars.Helper["inventoryState"] = mono.Make<int>("GameController", "staticInstance", "inventory", "state");
         vars.Helper["isInventoryNeedOpen"] = mono.Make<bool>("GameController", "staticInstance", "inventory", "needOpen");
-        vars.Helper["TerminalLinkProgress"] = mono.Make<float>("GameController", "uiController", "terminalUI", "terminalLinkUI", "overed"); // Must reach 5 (it may reach four in Warriors - Alchemists link, which we don't split)
+        // Gets the number of lines solved in the linking terminal.
+        vars.Helper["terminalLinkUIProgress"] = mono.Make<int>("GameController", "staticInstance", "uiController", "terminalUI", "terminalLinkUI", "overed");
 
         return true;
     });
@@ -218,7 +219,7 @@ split
         var isPickUpLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && (settings["a2s_pick_up_lens"] || settings["t2s_pick_up_lens"]);
 
         // True Ending - Devotees - Alchemists link 
-        var isDevoAlchSplit = vars.currentPlaceId == 16 && old.TerminalLinkProgress < 5 && current.TerminalLinkProgress == 5 && settings["t7s_devo_alch"];
+        var isDevoAlchSplit = vars.currentPlaceId == 16 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_devo_alch"];
 
         return isFirstJournalSplit || isCryptExitSplit || isHideAndSeekSplit || isPickUpCoinSplit || isEnterChurchSplit || isPickUpLensSplit || isDevoAlchSplit;
     }
@@ -244,7 +245,7 @@ split
         var isArmoryExitSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && (settings["a3s_armory_exit"] || settings["t3s_armory_exit"]);
 
         // True Ending - Warriors - Alchemists link
-        var isWarrAlchSplit = vars.currentPlaceId == 21 && old.TerminalLinkProgress < 5 && current.TerminalLinkProgress == 5 && settings["t7s_warr_alch"];
+        var isWarrAlchSplit = vars.currentPlaceId == 21 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_warr_alch"];
 
         return isSpearRoomSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit || isWarrAlchSplit;
     }
@@ -272,7 +273,7 @@ split
         var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && (settings["a4s_pick_up_windmill_torch"] || settings["t4s_pick_up_windmill_torch"]);
 
         // True Ending - Devotees - Bards link
-        var isDevoBardSplit = vars.currentPlaceId == 25 && old.TerminalLinkProgress < 5 && current.TerminalLinkProgress == 5 && settings["t7s_warr_alch"];
+        var isDevoBardSplit = vars.currentPlaceId == 25 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_warr_alch"];
 
         return isServantDoorSplit || isEnterSewersSplit || isTheatreTicketSplit || isTheatreWatchedSplit || isExitSewersSplit || isPickUpWindmillTorchSplit || isDevoBardSplit;
     }
@@ -294,7 +295,7 @@ split
         var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && (settings["a5s_pick_up_silver_bar"] || settings["t5s_pick_up_silver_bar"]);
 
         // True Ending - Bards - Alchemists split
-        var isBardAlchSplit = vars.currentPlaceId == 19 && old.TerminalLinkProgress < 5 && current.TerminalLinkProgress == 5 && settings["t7s_bard_alch"];
+        var isBardAlchSplit = vars.currentPlaceId == 19 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_bard_alch"];
 
         // Set vars.isCanteenTimerTriggered so split isn't triggered again when entering the canteen.
         if (isTriggerCanteenTimerSplit)
