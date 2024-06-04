@@ -54,6 +54,15 @@ init
     // Gets whether the inventory is *actually* forced open.
     // The split block should check this variable to see if an item is picked up.
     vars.isInventoryForcedOpen = false;
+
+    /* Variables for old place */
+    vars.oldLevelId = -1;
+    vars.oldPlaceId = -1;
+
+    /* Variables for current place */
+    vars.currentLevelId = -1;
+    vars.currentPlaceId = -1;
+    vars.currentPortalId = -1;
 }
 
 update
