@@ -43,4 +43,68 @@
             <Setting Id="a6s_pick_up_exile_key" State="true" Label="Pick up the Exile key" ToolTip="Pick up the Exile key during the cutscene with the Creator" />
         </Setting>
     </Setting>
+
+    <Setting Id="true_ending_category" State="false" Label="True Ending splits">
+        <Setting Id="t1ss_crypt" State="true" Label="Crypt True Ending splits">
+            <Setting Id="t1s_first_journal" State="true" Label="1st journal entry" ToolTip="Finish the 1st journal entry and exit the room" />
+            <Setting Id="t1s_crypt_exit" State="true" Label="Exit the Crypt level" ToolTip="Finish the water locks puzzle and exit the room" />
+        </Setting>
+
+        <Setting Id="t2ss_abbey" State="true" Label="Abbey (Devotees) True Ending splits">
+            <Setting Id="t2s_hide_and_seek" State="true" Label="Finish hide and seek" ToolTip="Finish hide and seek and enter the stealth room" />
+            <Setting Id="t2s_pick_up_coin" State="true" Label="Pick up the coin" ToolTip="Pick up the coin after finishing the bed puzzle" />
+            <Setting Id="t2s_enter_church" State="true" Label="Enter the church" />
+            <Setting Id="t2s_pick_up_lens" State="true" Label="Pick up the lens" ToolTip="Pick up the lens after getting the key from the jar and opening the door" />
+            <Setting Id="t2s_abbey_exit" State="true" Label="Exit the Abbey level" ToolTip="Exit through the Warrior door" />
+        </Setting>
+
+        <Setting Id="t3ss_fortress" State="true" Label="Fortress (Warriors) True Ending splits">
+            <Setting Id="t3s_spear_room" State="true" Label="Exit the room with the spear" />
+            <Setting Id="t3s_stealth_start" State="true" Label="Start the stealth section" />
+            <Setting Id="t3s_stealth_corridor" State="true" Label="Exit the stealth corridor" ToolTip="Exit the long stealth corridor (has a gong)" />
+            <Setting Id="t3s_stealth_storage_room" State="true" Label="Exit the stealth storage room" ToolTip="Exit the storage room (has a elevator with 2 boxes on it and a guard near the exit)" />
+            <Setting Id="t3s_armory_exit" State="true" Label="Exit the armory" ToolTip="Exit the armory after disguising as a guard" />
+            <Setting Id="t3s_fortress_exit" State="true" Label="Exit the Fortress level" ToolTip="Take the elevator to the Gardens" />
+        </Setting>
+
+        <Setting Id="t4ss_gardens" State="true" Label="Gardens (Bards) True Ending splits">
+            <Setting Id="t4s_servant_door" State="true" Label="Exit through the servant's door" />
+            <Setting Id="t4s_theatre_ticket" State="true" Label="Get the ticket to enter the theatre" />
+            <Setting Id="t4s_theatre_watched" State="true" Label="Exit the room after watching the show" />
+            <Setting Id="t4s_exit_sewers" State="true" Label="Exit the sewers" ToolTip="Exit the sewers after getting the compass" />
+            <Setting Id="t4s_pick_up_windmill_torch" State="true" Label="Pick up the torch at the windmill" />
+            <Setting Id="t4s_maze_exit" State="true" Label="Exit the maze" ToolTip="Note: the maze is technically part of the Factory level, but we consider it as part of the Gardens level" />
+        </Setting>
+
+        <Setting Id="t5ss_factory" State="true" Label="Factory (Alchemists) True Ending splits">
+            <Setting Id="t5s_escape_monster" State="true" Label="Escape the monster" ToolTip="Escape the monster and enter the room to activate the elevator" />
+            <Setting Id="t5s_trigger_canteen_timer" State="true" Label="Trigger the canteen timer" ToolTip="Trigger the canteen timer by entering the foyer. The canteen should open in ~3min30s." />
+            <Setting Id="t5s_pick_up_silverware" State="true" Label="Pick up the silverware" ToolTip="Pick up the silverware in the canteen" />
+            <Setting Id="t5s_pick_up_silver_bar" State="true" Label="Pick up the silver bar" ToolTip="Pick up the silver bar after melting the silverware" />
+            <Setting Id="t5s_factory_exit" State="true" Label="Exit the Factory level" ToolTip="Place the crafted key into the door and exit through the door" />
+        </Setting>
+
+        <Setting Id="t6ss_exile" State="true" Label="Exile (Anchorites) True Ending splits">
+            <Setting Id="t6s_exile_npc_room" State="true" Label="Enter the Creator's room" ToolTip="Enter the Creator's room after entering the code in the keypad" />
+            <Setting Id="t6s_pick_up_exile_key" State="true" Label="Pick up the Exile key" ToolTip="Pick up the Exile key during the cutscene with the Creator" />
+        </Setting>
+
+        <Setting Id="t7ss_terminals" State="true" Label="Terminals True Ending splits">
+            <Setting Id="t7s_devo_alch" State="true" Label="Linking Devotees and Alchemists" />
+            <Setting Id="t7s_abbey_lab" State="true" Label="Exiting the Abbey exile lab" />
+            <Setting Id="t7s_fortress_lab" State="true" Label="Exiting the Fortress exile lab" />
+            <Setting Id="t7s_warr_alch" State="true" Label="Linking Warriors and Alchemists" />
+            <Setting Id="t7s_gardens_lab" State="true" Label="Exiting the Gardens exile lab" />
+            <Setting Id="t7s_devo_bard" State="true" Label="Linking Devotees and Bards" />
+            <Setting Id="t7s_bard_alch" State="true" Label="Linking Bards and Alchemists" />
+            <Setting Id="t7s_factory_lab" State="true" Label="Exiting the Factory exile lab" />
+            <Setting Id="t7s_fake_tower" State="true" Label="Reaching the fake tower" />
+        </Setting>
+        <Setting Id="t8ss_simulation" State="true" Label="Simulation (Exile) True Ending splits">
+            <Setting Id="t8s_terminal_1" State="true" Label="Simulation Terminal 1" />
+            <Setting Id="t8s_terminal_2" State="true" Label="Simulation Terminal 2" />
+            <Setting Id="t8s_terminal_3" State="true" Label="Simulation Terminal 3" />
+            <Setting Id="t8s_exile_shutdown" State="true" Label="Exile shut down" />
+        </Setting>
+    </Setting>
 </Settings>

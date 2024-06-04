@@ -38,6 +38,8 @@ init
 
         vars.Helper["inventoryState"] = mono.Make<int>("GameController", "staticInstance", "inventory", "state");
         vars.Helper["isInventoryNeedOpen"] = mono.Make<bool>("GameController", "staticInstance", "inventory", "needOpen");
+        // Gets the number of lines solved in the linking terminal.
+        vars.Helper["terminalLinkUIProgress"] = mono.Make<int>("GameController", "staticInstance", "uiController", "terminalUI", "terminalLinkUI", "overed");
 
         return true;
     });
@@ -202,25 +204,28 @@ split
     {
         /* Crypt splits */
         // Finish the 1st journal entry and exit the room.
-        var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4 && settings["a1s_first_journal"];
+        var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4 && (settings["a1s_first_journal"] || settings["t1s_first_journal"]);
         // Crypt -> Abbey (finish the water locks puzzle and exit the room)
-        var isCryptExitSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && settings["a1s_crypt_exit"];
+        var isCryptExitSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && (settings["a1s_crypt_exit"] || settings["t1s_crypt_exit"]);
 
         /* Abbey splits */
         // Finish hide and seek and enter the stealth room.
-        var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["a2s_hide_and_seek"];
+        var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && (settings["a2s_hide_and_seek"] || settings["t2s_hide_and_seek"]);
         // Pick up the coin item by finishing the bed puzzle.
-        var isPickUpCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["a2s_pick_up_coin"];
+        var isPickUpCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && (settings["a2s_pick_up_coin"] || settings["t2s_pick_up_coin"]);
         // Enter the church.
-        var isEnterChurchSplit = vars.oldPlaceId == 12 && vars.currentPlaceId == 21 && settings["a2s_enter_church"];
+        var isEnterChurchSplit = vars.oldPlaceId == 12 && vars.currentPlaceId == 21 && (settings["a2s_enter_church"] || settings["t2s_enter_church"]);
         // Pick up the lens item after getting the key from the jar and opening the door.
-        var isPickUpLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && settings["a2s_pick_up_lens"];
+        var isPickUpLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && (settings["a2s_pick_up_lens"] || settings["t2s_pick_up_lens"]);
 
-        return isFirstJournalSplit || isCryptExitSplit || isHideAndSeekSplit || isPickUpCoinSplit || isEnterChurchSplit || isPickUpLensSplit;
+        // True Ending - Devotees - Alchemists link 
+        var isDevoAlchSplit = vars.currentPlaceId == 16 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_devo_alch"];
+
+        return isFirstJournalSplit || isCryptExitSplit || isHideAndSeekSplit || isPickUpCoinSplit || isEnterChurchSplit || isPickUpLensSplit || isDevoAlchSplit;
     }
 
     // Abbey -> Fortress
-    if (vars.oldLevelId == 0 && vars.currentLevelId == 1 && settings["a2s_abbey_exit"])
+    if (vars.oldLevelId == 0 && vars.currentLevelId == 1 && (settings["a2s_abbey_exit"] || settings["t2s_abbey_exit"]))
     {
         return true;
     }
@@ -229,21 +234,24 @@ split
     if (vars.oldLevelId == 1 && vars.currentLevelId == 1)
     {
         // Exit the room with the spear.
-        var isSpearRoomSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["a3s_spear_room"];
+        var isSpearRoomSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && (settings["a3s_spear_room"] || settings["t3s_spear_room"]);
         // Enter the first stealth room.
-        var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && settings["a3s_stealth_start"];
+        var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && (settings["a3s_stealth_start"] || settings["t3s_stealth_start"]);
         // Exit the stealth corridor.
-        var isStealthCorridorSplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && settings["a3s_stealth_corridor"];
+        var isStealthCorridorSplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && (settings["a3s_stealth_corridor"] || settings["t3s_stealth_corridor"]);
         // Exit the stealth storage room (has an elevator wtih 2 boxes).
-        var isStealthStorageRoomSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["a3s_stealth_storage_room"];
+        var isStealthStorageRoomSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && (settings["a3s_stealth_storage_room"] || settings["t3s_stealth_storage_room"]);
         // Exit the armory room after disguising as a guard.
-        var isArmoryExitSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && settings["a3s_armory_exit"];
+        var isArmoryExitSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && (settings["a3s_armory_exit"] || settings["t3s_armory_exit"]);
 
-        return isSpearRoomSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit;
+        // True Ending - Warriors - Alchemists link
+        var isWarrAlchSplit = vars.currentPlaceId == 21 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_warr_alch"];
+
+        return isSpearRoomSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit || isWarrAlchSplit;
     }
 
     // Fortress -> Gardens.
-    if (vars.oldLevelId == 1 && vars.currentLevelId == 2 && settings["a3s_fortress_exit"])
+    if (vars.oldLevelId == 1 && vars.currentLevelId == 2 && (settings["a3s_fortress_exit"] || settings["t3s_fortress_exit"]))
     {
         return true;
     }
@@ -252,15 +260,22 @@ split
     if (vars.oldLevelId == 2 && vars.currentLevelId == 2)
     {
         // Exit through the servant's door.
-        var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && settings["a4s_servant_door"];
+        var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && (settings["a4s_servant_door"] || settings["t4s_servant_door"]);
         // Enter sewers.
         var isEnterSewersSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 11 && settings["a4s_enter_sewers"];
+        // Get theatre ticket.
+        var isTheatreTicketSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["t4s_theatre_ticket"];
+        // Watch the show.
+        var isTheatreWatchedSplit = vars.oldPlaceId == 23 && vars.currentPlaceId == 24 && settings["t4s_theatre_watched"];
         // Exit sewers.
-        var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && settings["a4s_exit_sewers"];
+        var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && (settings["a4s_exit_sewers"] || settings["t4s_exit_sewers"]);
         // Pick up torch item at windmill.
-        var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && settings["a4s_pick_up_windmill_torch"];
+        var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && (settings["a4s_pick_up_windmill_torch"] || settings["t4s_pick_up_windmill_torch"]);
 
-        return isServantDoorSplit || isEnterSewersSplit || isExitSewersSplit || isPickUpWindmillTorchSplit;
+        // True Ending - Devotees - Bards link
+        var isDevoBardSplit = vars.currentPlaceId == 25 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_warr_alch"];
+
+        return isServantDoorSplit || isEnterSewersSplit || isTheatreTicketSplit || isTheatreWatchedSplit || isExitSewersSplit || isPickUpWindmillTorchSplit || isDevoBardSplit;
     }
 
     /* Skipping Gardens -> Tunnels split, since we're considering the maze as part of Gardens */
@@ -269,15 +284,18 @@ split
     if (vars.oldLevelId == 3 && vars.currentLevelId == 3)
     {
         // Exit the maze.
-        var isMazeExitSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && settings["a4s_maze_exit"];
+        var isMazeExitSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && (settings["a4s_maze_exit"] || settings["t4s_maze_exit"]);
         // Escape the monster.
-        var isEscapeMonsterSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && settings["a5s_escape_monster"];
+        var isEscapeMonsterSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && (settings["a5s_escape_monster"] || settings["t5s_escape_monster"]);
         // Trigger the canteen timer (i.e. enter the canteen foyer for the 1st time).
-        var isTriggerCanteenTimerSplit = vars.oldPlaceId == 31 && vars.currentPlaceId == 32 && !vars.isCanteenTimerTriggered && settings["a5s_trigger_canteen_timer"];
+        var isTriggerCanteenTimerSplit = vars.oldPlaceId == 31 && vars.currentPlaceId == 32 && !vars.isCanteenTimerTriggered && (settings["a5s_trigger_canteen_timer"] || settings["t5s_trigger_canteen_timer"]);
         // Pick up silverware item at canteen.
-        var isPickUpSilverwareSplit = vars.currentPlaceId == 33 && vars.isInventoryForcedOpen && settings["a5s_pick_up_silverware"];
+        var isPickUpSilverwareSplit = vars.currentPlaceId == 33 && vars.isInventoryForcedOpen && (settings["a5s_pick_up_silverware"] || settings["t5s_pick_up_silverware"]);
         // Pick up silver bar item after melting the silverware.
-        var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && settings["a5s_pick_up_silver_bar"];
+        var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && (settings["a5s_pick_up_silver_bar"] || settings["t5s_pick_up_silver_bar"]);
+
+        // True Ending - Bards - Alchemists split
+        var isBardAlchSplit = vars.currentPlaceId == 19 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_bard_alch"];
 
         // Set vars.isCanteenTimerTriggered so split isn't triggered again when entering the canteen.
         if (isTriggerCanteenTimerSplit)
@@ -285,11 +303,11 @@ split
             vars.isCanteenTimerTriggered = true;
         }
 
-        return isMazeExitSplit || isEscapeMonsterSplit || isTriggerCanteenTimerSplit || isPickUpSilverwareSplit || isPickUpSilverBarSplit;
+        return isMazeExitSplit || isEscapeMonsterSplit || isTriggerCanteenTimerSplit || isPickUpSilverwareSplit || isPickUpSilverBarSplit || isBardAlchSplit;
     }
 
     // Factory -> Exile.
-    if (vars.oldLevelId == 3 && vars.currentLevelId == 4 && settings["a5s_factory_exit"])
+    if (vars.oldLevelId == 3 && vars.currentLevelId == 4 && (settings["a5s_factory_exit"] || settings["t5s_factory_exit"]))
     {
         return true;
     }
@@ -297,13 +315,38 @@ split
     // Exile (Anchorites) splits
     if (vars.oldLevelId == 4 && vars.currentLevelId == 4)
     {
+        /* Exile splits */
         // Enter the Creator's room after entering the 3-glyph code in the keypad.
-        var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && settings["a6s_exile_npc_room"];
+        var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && (settings["a6s_exile_npc_room"] || settings["t6s_exile_npc_room"]);
         // Pick up Exile key.
-        var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && settings["a6s_pick_up_exile_key"];
-        // Final split for player starting cutscene in final room in Exile. Not optional.
-        var isFinalCutsceneSplit = vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff;
+        var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && (settings["a6s_pick_up_exile_key"] || settings["t6s_pick_up_exile_key"]);
+        // Final split (not optional) for Any% category. Fake tower split for True Ending category
+        var isSadTowerSplit = vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff && (settings["any_category"] || settings["t7s_fake_tower"]);
+        // Final split (not optional) for True Ending category
+        var isHappyTowerSplit = vars.currentPlaceId == 3 && !current.canPlayerRun && !old.cursorOff && current.cursorOff && settings["true_ending_category"];
 
-        return isExileNpcRoomSplit || isPickUpExileKeySplit || isFinalCutsceneSplit;
-    }    
+        /* Laboratories True Ending splits */
+        var isAbbeyLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 16 && settings["t7s_abbey_lab"];
+        var isFortressLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 17 && settings["t7s_fortress_lab"];
+        var isGardensLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 18 && settings["t7s_gardens_lab"];
+        var isFactoryLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 19 && settings["t7s_factory_lab"];
+
+        return isExileNpcRoomSplit || isPickUpExileKeySplit || isSadTowerSplit || isHappyTowerSplit || isAbbeyLabSplit || isFortressLabSplit || isGardensLabSplit || isFactoryLabSplit;
+    }
+
+    // Simulation splits
+    if (vars.oldLevelId == 5 && vars.currentLevelId == 5)
+    {
+        var isTerminal1Split = vars.oldPlaceId == 4 && vars.currentPlaceId == 7 && settings["t8s_terminal_1"];
+        var isTerminal2Split = vars.oldPlaceId == 11 && vars.currentPlaceId == 12 && settings["t8s_terminal_2"];
+        var isTerminal3Split = vars.oldPlaceId == 13 && vars.currentPlaceId == 16 && settings["t8s_terminal_3"];
+
+        return isTerminal1Split || isTerminal2Split || isTerminal3Split;
+    }
+
+    // Simuation end
+    if (vars.oldLevelId == 5 && vars.currentLevelId == 4 && settings["t8s_exile_shutdown"])
+    {
+        return true;
+    }
 }
