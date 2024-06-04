@@ -1,10 +1,4 @@
 <Settings>
-    <Setting Id="game_save_slot" State="true" Label="[Required, select 1] Game save slot" ToolTip="The save slot that will be used for speedruns. Your level/place ids are determined from the save data.">
-        <Setting Id="save_slot_1" State="false" Label="Save slot 1" />
-        <Setting Id="save_slot_2" State="false" Label="Save slot 2" />
-        <Setting Id="save_slot_3" State="true" Label="Save slot 3" />
-    </Setting>
-
     <Setting Id="any_category" State="true" Label="Any% splits">
         <Setting Id="a1ss_crypt" State="true" Label="Crypt Any% splits">
             <Setting Id="a1s_first_journal" State="true" Label="1st journal entry" ToolTip="Finish the 1st journal entry and exit the room" />
