@@ -18,6 +18,7 @@ init
 
         vars.Helper["titleScreenPtr"] = mono.Make<ulong>("GameController", "staticInstance", "placeController", "titleScreen");
         vars.Helper["currentPlacePtr"] = mono.Make<ulong>("GameController", "staticInstance", "placeController", "currentPlace");
+        vars.Helper["currentGameSaveId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "currentGameSaveId");
 
         vars.Helper["gameSave1LevelId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x20, "currentPlaceId", "level");
         vars.Helper["gameSave1PlaceId"] = mono.Make<int>("GameController", "staticInstance", "placeController", "gameSaves", 0x20, "currentPlaceId", "id");
@@ -54,12 +55,21 @@ init
     // Gets whether the inventory is *actually* forced open.
     // The split block should check this variable to see if an item is picked up.
     vars.isInventoryForcedOpen = false;
+
+    /* Variables for old place */
+    vars.oldLevelId = -1;
+    vars.oldPlaceId = -1;
+
+    /* Variables for current place */
+    vars.currentLevelId = -1;
+    vars.currentPlaceId = -1;
+    vars.currentPortalId = -1;
 }
 
 update
 {
     // Determine save slot based on setting, and populate vars with old and current level/place ids.
-    if (settings["save_slot_1"] && !settings["save_slot_2"] && !settings["save_slot_3"])
+    if (current.currentGameSaveId == 0)
     {
         vars.oldLevelId = old.gameSave1LevelId;
         vars.oldPlaceId = old.gameSave1PlaceId;
@@ -67,7 +77,7 @@ update
         vars.currentPlaceId = current.gameSave1PlaceId;
         vars.currentPortalId = current.gameSave1PortalId;
     }
-    else if (!settings["save_slot_1"] && settings["save_slot_2"] && !settings["save_slot_3"])
+    else if (current.currentGameSaveId == 1)
     {
         vars.oldLevelId = old.gameSave2LevelId;
         vars.oldPlaceId = old.gameSave2PlaceId;
@@ -75,7 +85,7 @@ update
         vars.currentPlaceId = current.gameSave2PlaceId;
         vars.currentPortalId = current.gameSave2PortalId;
     }
-    else if (!settings["save_slot_1"] && !settings["save_slot_2"] && settings["save_slot_3"])
+    else if (current.currentGameSaveId == 2)
     {
         vars.oldLevelId = old.gameSave3LevelId;
         vars.oldPlaceId = old.gameSave3PlaceId;
@@ -85,8 +95,8 @@ update
     }
     else
     {
-        // If setting config is invalid, don't run autosplitter.
-        print("Save slot config is invalid, autosplitter will not run.");
+        // No save slot has been selected yet.
+        print("No save slot selected yet, exiting early.");
         return false;
     }
 
