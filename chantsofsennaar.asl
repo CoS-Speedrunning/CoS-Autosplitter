@@ -294,7 +294,7 @@ split
         var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && (settings["a5s_pick_up_silver_bar"] || settings["t5s_pick_up_silver_bar"]);
 
         // True Ending - Bards - Alchemists split
-        isBardAlchSplit = vars.currentPlaceId == 19 && old.isTerminalLinkComplete == 0 && current.isTerminalLinkComplete > 0  && settings["t7s_bard_alch"];
+        var isBardAlchSplit = vars.currentPlaceId == 19 && old.isTerminalLinkComplete == 0 && current.isTerminalLinkComplete > 0  && settings["t7s_bard_alch"];
 
         // Set vars.isCanteenTimerTriggered so split isn't triggered again when entering the canteen.
         if (isTriggerCanteenTimerSplit)
