@@ -1,5 +1,5 @@
 
-# Chants of Sennaar Autosplitter v1.0.0
+# Chants of Sennaar Autosplitter v0.2.0
 
 ## Known bugs
 None as of 4th June 2024
