@@ -38,7 +38,7 @@ init
 
         vars.Helper["inventoryState"] = mono.Make<int>("GameController", "staticInstance", "inventory", "state");
         vars.Helper["isInventoryNeedOpen"] = mono.Make<bool>("GameController", "staticInstance", "inventory", "needOpen");
-        vars.Helper["isTerminalLinkComplete"] = mono.Make<int>("GameController", "uiController", "terminalUI", "terminalLinkUI", "needSolveLinkTimeLeft"); // Not a boolean - must turn >0
+        vars.Helper["isTerminalLinkComplete"] = mono.Make<float>("GameController", "uiController", "terminalUI", "terminalLinkUI", "needSolveLinkTimeLeft"); // Not a boolean - must turn >0
 
         return true;
     });
