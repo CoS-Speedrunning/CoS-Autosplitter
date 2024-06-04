@@ -338,8 +338,8 @@ split
     if (vars.oldLevelId == 5 && vars.currentLevelId == 5)
     {
         var isTerminal1Split = vars.oldPlaceId == 4 && vars.currentPlaceId == 7 && settings["t8s_terminal_1"];
-        var isTerminal2Split = vars.oldPlaceId == 11 && vars.currentPlaceId == 12 && settings["t8s_terminal_1"];
-        var isTerminal3Split = vars.oldPlaceId == 13 && vars.currentPlaceId == 16 && settings["t8s_terminal_1"];
+        var isTerminal2Split = vars.oldPlaceId == 11 && vars.currentPlaceId == 12 && settings["t8s_terminal_2"];
+        var isTerminal3Split = vars.oldPlaceId == 13 && vars.currentPlaceId == 16 && settings["t8s_terminal_3"];
 
         return isTerminal1Split || isTerminal2Split || isTerminal3Split;
     }
