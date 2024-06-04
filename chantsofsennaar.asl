@@ -306,33 +306,33 @@ split
     {
         /* Exile splits */
         // Enter the Creator's room after entering the 3-glyph code in the keypad.
-        var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && settings["a6s_exile_npc_room"];
+        var isExileNpcRoomSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 6 && (settings["a6s_exile_npc_room"] || settings["t6s_exile_npc_room"]);
         // Pick up Exile key.
-        var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && settings["a6s_pick_up_exile_key"];
+        var isPickUpExileKeySplit = vars.currentPlaceId == 24 && vars.isInventoryForcedOpen && (settings["a6s_pick_up_exile_key"] || settings["t6s_pick_up_exile_key"]);
         // Final split (not optional) for Any% category. Fake tower split for True Ending category
         var isSadTowerSplit = vars.currentPlaceId == 2 && !current.canPlayerRun && !old.cursorOff && current.cursorOff && (settings["any_category"] || settings["t7s_fake_tower"]);
         // Final split (not optional) for True Ending category
         var isHappyTowerSplit = vars.currentPlaceId == 3 && !current.canPlayerRun && !old.cursorOff && current.cursorOff && settings["true_ending_category"];
 
         /* Laboratories True Ending splits */
-        var isAbbeyLab = vars.oldPlaceId == 9 && vars.currentPlaceId == 16 && settings["a7s_abbey_lab"];
-        var isFortressLab = vars.oldPlaceId == 9 && vars.currentPlaceId == 17 && settings["a7s_fortress_lab"];
-        var isGardensLab = vars.oldPlaceId == 9 && vars.currentPlaceId == 18 && settings["a7s_gardens_lab"];
-        var isFactoryLab = vars.oldPlaceId == 9 && vars.currentPlaceId == 19 && settings["a7s_factory_lab"];
+        var isAbbeyLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 16 && settings["t7s_abbey_lab"];
+        var isFortressLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 17 && settings["t7s_fortress_lab"];
+        var isGardensLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 18 && settings["t7s_gardens_lab"];
+        var isFactoryLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 19 && settings["t7s_factory_lab"];
 
-        return isExileNpcRoomSplit || isPickUpExileKeySplit || isSadTowerSplit || isHappyTowerSplit || isAbbeyLab || isFortressLab || isGardensLab || isFactoryLab;
+        return isExileNpcRoomSplit || isPickUpExileKeySplit || isSadTowerSplit || isHappyTowerSplit || isAbbeyLaSplit || isFortressLabSplit || isGardensLabSplit || isFactoryLabSplit;
     }
 
     // Simulation splits
     if (vars.oldLevelId == 5 && vars.currentLevelId == 5)
     {
-        var isTerminal1Split = vars.oldPlaceId == 4 && vars.newPlaceId == 7 && settings["a8s_terminal_1"];
-        var isTerminal2Split = vars.oldPlaceId == 11 && vars.newPlaceId == 12 && settings["a8s_terminal_1"];
-        var isTerminal3Split = vars.oldPlaceId == 13 && vars.newPlaceId == 16 && settings["a8s_terminal_1"];
+        var isTerminal1Split = vars.oldPlaceId == 4 && vars.newPlaceId == 7 && settings["t8s_terminal_1"];
+        var isTerminal2Split = vars.oldPlaceId == 11 && vars.newPlaceId == 12 && settings["t8s_terminal_1"];
+        var isTerminal3Split = vars.oldPlaceId == 13 && vars.newPlaceId == 16 && settings["t8s_terminal_1"];
     }
 
     // Simuation end
-    if (vars.oldLevelId == 5 && vars.currentLevelId == 4 && settings["a8s_exile_shutdown"])
+    if (vars.oldLevelId == 5 && vars.currentLevelId == 4 && settings["t8s_exile_shutdown"])
     {
         return true;
     }
