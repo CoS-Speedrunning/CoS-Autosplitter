@@ -330,7 +330,7 @@ split
         var isGardensLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 18 && settings["t7s_gardens_lab"];
         var isFactoryLabSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 19 && settings["t7s_factory_lab"];
 
-        return isExileNpcRoomSplit || isPickUpExileKeySplit || isSadTowerSplit || isHappyTowerSplit || isAbbeyLaSplit || isFortressLabSplit || isGardensLabSplit || isFactoryLabSplit;
+        return isExileNpcRoomSplit || isPickUpExileKeySplit || isSadTowerSplit || isHappyTowerSplit || isAbbeyLabSplit || isFortressLabSplit || isGardensLabSplit || isFactoryLabSplit;
     }
 
     // Simulation splits
