@@ -168,7 +168,6 @@ onReset
     vars.isTitleScreenToNewSave = false;
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
-    vars.isCanteenTimerTriggered = false;
 
     vars.splitDict = new Dictionary<string, bool>();
 }
@@ -217,7 +216,6 @@ onStart
     vars.isTitleScreenToNewSave = false;
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
-    vars.isCanteenTimerTriggered = false;
 
     vars.splitDict = new Dictionary<string, bool>();
 }
@@ -317,30 +315,24 @@ split
     if (vars.oldLevelId == 3 && vars.currentLevelId == 3)
     {
         // Exit the maze.
-        var isMazeExitSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && (settings["a4s_maze_exit"] || settings["t4s_maze_exit"]);
+        var mazeExit = vars.checkSplit(7, 8, "a4s_maze_exit", "t4s_maze_exit");
         // Escape the monster.
-        var isEscapeMonsterSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && (settings["a5s_escape_monster"] || settings["t5s_escape_monster"]);
+        var escapeMonster = vars.checkSplit(13, 14, "a5s_escape_monster", "t5s_escape_monster");
         // Trigger the canteen timer (i.e. enter the canteen foyer for the 1st time).
-        var isTriggerCanteenTimerSplit = vars.oldPlaceId == 31 && vars.currentPlaceId == 32 && !vars.isCanteenTimerTriggered && (settings["a5s_trigger_canteen_timer"] || settings["t5s_trigger_canteen_timer"]);
+        var triggerCanteenTimer = vars.checkSplit(31, 32, "a5s_trigger_canteen_timer", "t5s_trigger_canteen_timer");
         // Pick up silverware item at canteen.
-        var isPickUpSilverwareSplit = vars.currentPlaceId == 33 && vars.isInventoryForcedOpen && (settings["a5s_pick_up_silverware"] || settings["t5s_pick_up_silverware"]);
+        var pickUpSilverware = vars.isInventoryForcedOpen && vars.checkSplit(33, 33, "a5s_pick_up_silverware", "t5s_pick_up_silverware");
         // Pick up silver bar item after melting the silverware.
-        var isPickUpSilverBarSplit = vars.currentPlaceId == 22 && vars.isInventoryForcedOpen && (settings["a5s_pick_up_silver_bar"] || settings["t5s_pick_up_silver_bar"]);
+        var pickUpSilverBar = vars.isInventoryForcedOpen && vars.checkSplit(22, 22, "a5s_pick_up_silver_bar", "t5s_pick_up_silver_bar");
 
-        // True Ending - Bards - Alchemists split
-        var isBardAlchSplit = vars.currentPlaceId == 19 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_bard_alch"];
+        // True Ending - Bard-Alchemist split
+        var bardAlchemistSplit = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.checkSplit(19, 19, "t7s_bard_alch", null);
 
-        // Set vars.isCanteenTimerTriggered so split isn't triggered again when entering the canteen.
-        if (isTriggerCanteenTimerSplit)
-        {
-            vars.isCanteenTimerTriggered = true;
-        }
-
-        return isMazeExitSplit || isEscapeMonsterSplit || isTriggerCanteenTimerSplit || isPickUpSilverwareSplit || isPickUpSilverBarSplit || isBardAlchSplit;
+        return mazeExit || escapeMonster || triggerCanteenTimer || pickUpSilverware || pickUpSilverBar || bardAlchemistSplit;
     }
 
     // Factory -> Exile.
-    if (vars.oldLevelId == 3 && vars.currentLevelId == 4 && (settings["a5s_factory_exit"] || settings["t5s_factory_exit"]))
+    if (vars.oldLevelId == 3 && vars.currentLevelId == 4 && vars.checkSplit(null, null, "a5s_factory_exit", "t5s_factory_exit"))
     {
         return true;
     }
