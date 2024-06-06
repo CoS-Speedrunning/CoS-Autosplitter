@@ -66,23 +66,28 @@ init
     vars.currentPlaceId = -1;
     vars.currentPortalId = -1;
 
-    // Function checks if we should split, based on provided setting names.
-    // It also uses a dictionary to ensure we don't split again.
+    // Function checks if we should split, based on desired old and current place ids, and provided setting names.
+    // We use vars.splitDict to ensure we don't split again.
     vars.splitDict = new Dictionary<string, bool>();
-    vars.checkSplit = (Func<int, int, string, string, bool>)((oldPlaceId, currentPlaceId, settingName1, settingName2) =>
+    vars.checkSplit = (Func<int?, int?, string, string, bool>)((oldPlaceId, currentPlaceId, settingName1, settingName2) =>
     {
         var key1 = string.IsNullOrEmpty(settingName1) ? string.Empty : settingName1;
         var key2 = string.IsNullOrEmpty(settingName2) ? string.Empty : settingName2;
-        var key = key1 + ":" + key2;
+        var key = key1 + "||" + key2;
         if(!vars.splitDict.ContainsKey(key))
         {
             vars.splitDict[key] = false;
         }
 
-        var checkPlaceIds = vars.oldPlaceId == oldPlaceId && vars.currentPlaceId == currentPlaceId;
+        var checkOldPlaceId = oldPlaceId == null ? true : vars.oldPlaceId == oldPlaceId;
+        var checkCurrentPlaceId = currentPlaceId == null ? true : vars.currentPlaceId == currentPlaceId;
+        var checkPlaceIds = checkOldPlaceId && checkCurrentPlaceId;
+
         var checkSetting1 = string.IsNullOrEmpty(settingName1) ? false : settings[settingName1];
         var checkSetting2 = string.IsNullOrEmpty(settingName2) ? false : settings[settingName2];
-        var shouldSplit = checkPlaceIds && (checkSetting1 || checkSetting2) && !vars.splitDict[key];
+        var checkSettings = checkSetting1 || checkSetting2;
+
+        var shouldSplit = checkPlaceIds && checkSettings && !vars.splitDict[key];
         if (shouldSplit)
         {
             vars.splitDict[key] = true;
@@ -246,14 +251,14 @@ split
         // Pick up the lens item after getting the key from the jar and opening the door.
         var pickUpLens = vars.isInventoryForcedOpen && vars.checkSplit(23, 23, "a2s_pick_up_lens", "t2s_pick_up_lens");
 
-        // True Ending - Devotees-Alchemists link 
-        var devoteeAlchemistLink = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.shouldSplit(16, 16, "t7s_devo_alch", null);
+        // True Ending - Devotee-Alchemist link 
+        var devoteeAlchemistLink = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.checkSplit(16, 16, "t7s_devo_alch", null);
 
         return firstJournal || cryptExit || hideAndSeek || pickUpCoin || enterChurch || pickUpLens || devoteeAlchemistLink;
     }
 
     // Abbey -> Fortress
-    if (vars.oldLevelId == 0 && vars.currentLevelId == 1 && (settings["a2s_abbey_exit"] || settings["t2s_abbey_exit"]))
+    if (vars.oldLevelId == 0 && vars.currentLevelId == 1 && vars.checkSplit(null, null, "a2s_abbey_exit", "t2s_abbey_exit"))
     {
         return true;
     }
@@ -262,24 +267,24 @@ split
     if (vars.oldLevelId == 1 && vars.currentLevelId == 1)
     {
         // Exit the room with the spear.
-        var isSpearRoomSplit = vars.oldPlaceId == 7 && vars.currentPlaceId == 8 && (settings["a3s_spear_room"] || settings["t3s_spear_room"]);
+        var spearRoom = vars.checkSplit(7, 8, "a3s_spear_room", "t3s_spear_room");
         // Enter the first stealth room.
-        var isStealthStartSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && (settings["a3s_stealth_start"] || settings["t3s_stealth_start"]);
+        var stealthStart = vars.checkSplit(9, 11, "a3s_stealth_start", "t3s_stealth_start");
         // Exit the stealth corridor.
-        var isStealthCorridorSplit = vars.oldPlaceId == 0 && vars.currentPlaceId == 12 && (settings["a3s_stealth_corridor"] || settings["t3s_stealth_corridor"]);
+        var stealthCorridor = vars.checkSplit(0, 12, "a3s_stealth_corridor", "t3s_stealth_corridor");
         // Exit the stealth storage room (has an elevator wtih 2 boxes).
-        var isStealthStorageRoomSplit = vars.oldPlaceId == 13 && vars.currentPlaceId == 14 && (settings["a3s_stealth_storage_room"] || settings["t3s_stealth_storage_room"]);
+        var stealthStorageRoom = vars.checkSplit(13, 14, "a3s_stealth_storage_room", "t3s_stealth_storage_room");
         // Exit the armory room after disguising as a guard.
-        var isArmoryExitSplit = vars.oldPlaceId == 16 && vars.currentPlaceId == 14 && (settings["a3s_armory_exit"] || settings["t3s_armory_exit"]);
+        var armoryExit = vars.checkSplit(16, 14, "a3s_armory_exit", "t3s_armory_exit");
 
-        // True Ending - Warriors - Alchemists link
-        var isWarrAlchSplit = vars.currentPlaceId == 21 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_warr_alch"];
+        // True Ending - Warrior-Alchemist link
+        var warriorAlchemistLink = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.checkSplit(21, 21, "t7s_warr_alch", null);
 
-        return isSpearRoomSplit || isStealthStartSplit || isStealthCorridorSplit || isStealthStorageRoomSplit || isArmoryExitSplit || isWarrAlchSplit;
+        return spearRoom || stealthStart || stealthCorridor || stealthStorageRoom || armoryExit || warriorAlchemistLink;
     }
 
     // Fortress -> Gardens.
-    if (vars.oldLevelId == 1 && vars.currentLevelId == 2 && (settings["a3s_fortress_exit"] || settings["t3s_fortress_exit"]))
+    if (vars.oldLevelId == 1 && vars.currentLevelId == 2 && vars.checkSplit(null, null,"a3s_fortress_exit", "t3s_fortress_exit"))
     {
         return true;
     }
@@ -288,22 +293,22 @@ split
     if (vars.oldLevelId == 2 && vars.currentLevelId == 2)
     {
         // Exit through the servant's door.
-        var isServantDoorSplit = vars.oldPlaceId == 2 && vars.currentPlaceId == 5 && (settings["a4s_servant_door"] || settings["t4s_servant_door"]);
+        var servantDoor = vars.checkSplit(2, 5, "a4s_servant_door", "t4s_servant_door");
         // Enter sewers.
-        var isEnterSewersSplit = vars.oldPlaceId == 15 && vars.currentPlaceId == 11 && settings["a4s_enter_sewers"];
+        var enterSewers = vars.checkSplit(15, 11, "a4s_enter_sewers", null);
         // Get theatre ticket.
-        var isTheatreTicketSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && settings["t4s_theatre_ticket"];
+        var theatreTicket = vars.isInventoryForcedOpen && vars.checkSplit(17, 17, "t4s_theatre_ticket", null);
         // Watch the show.
-        var isTheatreWatchedSplit = vars.oldPlaceId == 23 && vars.currentPlaceId == 24 && settings["t4s_theatre_watched"];
+        var theatreWatched = vars.checkSplit(23, 24, "t4s_theatre_watched", null);
         // Exit sewers.
-        var isExitSewersSplit = vars.oldPlaceId == 11 && vars.currentPlaceId == 15 && (settings["a4s_exit_sewers"] || settings["t4s_exit_sewers"]);
+        var exitSewers = vars.checkSplit(11, 15, "a4s_exit_sewers", "t4s_exit_sewers");
         // Pick up torch item at windmill.
-        var isPickUpWindmillTorchSplit = vars.currentPlaceId == 18 && vars.isInventoryForcedOpen && (settings["a4s_pick_up_windmill_torch"] || settings["t4s_pick_up_windmill_torch"]);
+        var pickUpTorch = vars.isInventoryForcedOpen && vars.checkSplit(18, 18, "a4s_pick_up_windmill_torch", "t4s_pick_up_windmill_torch");
 
-        // True Ending - Devotees - Bards link
-        var isDevoBardSplit = vars.currentPlaceId == 25 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_warr_alch"];
+        // True Ending - Devotee-Bard link
+        var devoteeBardLink = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.checkSplit(25, 25, "t7s_devo_bard", null);
 
-        return isServantDoorSplit || isEnterSewersSplit || isTheatreTicketSplit || isTheatreWatchedSplit || isExitSewersSplit || isPickUpWindmillTorchSplit || isDevoBardSplit;
+        return servantDoor || enterSewers || theatreTicket || theatreWatched || exitSewers || pickUpTorch || devoteeBardLink;
     }
 
     /* Skipping Gardens -> Tunnels split, since we're considering the maze as part of Gardens */
