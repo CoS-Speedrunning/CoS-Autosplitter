@@ -69,17 +69,20 @@ init
     // Function checks if we should split, based on provided setting names.
     // It also uses a dictionary to ensure we don't split again.
     vars.splitDict = new Dictionary<string, bool>();
-    vars.checkSplit = (Func<string, string, bool>)((settingName1, settingName2) =>
+    vars.checkSplit = (Func<int, int, string, string, bool>)((oldPlaceId, currentPlaceId, settingName1, settingName2) =>
     {
-        var key = settingName1 + ":" + settingName2;
+        var key1 = string.IsNullOrEmpty(settingName1) ? string.Empty : settingName1;
+        var key2 = string.IsNullOrEmpty(settingName2) ? string.Empty : settingName2;
+        var key = key1 + ":" + key2;
         if(!vars.splitDict.ContainsKey(key))
         {
             vars.splitDict[key] = false;
         }
 
+        var checkPlaceIds = vars.oldPlaceId == oldPlaceId && vars.currentPlaceId == currentPlaceId;
         var checkSetting1 = string.IsNullOrEmpty(settingName1) ? false : settings[settingName1];
         var checkSetting2 = string.IsNullOrEmpty(settingName2) ? false : settings[settingName2];
-        var shouldSplit = (checkSetting1 || checkSetting2) && !vars.splitDict[key];
+        var shouldSplit = checkPlaceIds && (checkSetting1 || checkSetting2) && !vars.splitDict[key];
         if (shouldSplit)
         {
             vars.splitDict[key] = true;
@@ -87,10 +90,6 @@ init
 
         return shouldSplit;
     });
-
-    // Function checks if old and current place ids match the provided arguments.
-    vars.checkPlaceIds = (Func<int, int, bool>)((oldPlaceIdArg, currentPlaceIdArg) =>
-        vars.oldPlaceId == oldPlaceIdArg && vars.currentPlaceId == currentPlaceIdArg);
 }
 
 update
@@ -233,24 +232,24 @@ split
     {
         /* Crypt splits */
         // Finish the 1st journal entry and exit the room.
-        var isFirstJournalSplit = vars.checkPlaceIds(3, 4) && vars.checkSplit("a1s_first_journal", "t1s_first_journal");
+        var firstJournal = vars.checkSplit(3, 4, "a1s_first_journal", "t1s_first_journal");
         // Crypt -> Abbey (finish the water locks puzzle and exit the room)
-        var isCryptExitSplit = vars.checkPlaceIds(5, 6) && vars.checkSplit("a1s_crypt_exit", "t1s_crypt_exit");
+        var cryptExit = vars.checkSplit(5, 6, "a1s_crypt_exit", "t1s_crypt_exit");
 
         /* Abbey splits */
         // Finish hide and seek and enter the stealth room.
-        var isHideAndSeekSplit = vars.checkPlaceIds(9, 11) && vars.checkSplit("a2s_hide_and_seek", "t2s_hide_and_seek");
+        var hideAndSeek = vars.checkSplit(9, 11, "a2s_hide_and_seek", "t2s_hide_and_seek");
         // Pick up the coin item by finishing the bed puzzle.
-        var isPickUpCoinSplit = vars.checkPlaceIds(17, 17) && vars.isInventoryForcedOpen && vars.checkSplit("a2s_pick_up_coin", "t2s_pick_up_coin");
+        var pickUpCoin = vars.isInventoryForcedOpen && vars.checkSplit(17, 17, "a2s_pick_up_coin", "t2s_pick_up_coin");
         // Enter the church.
-        var isEnterChurchSplit = vars.checkPlaceIds(12, 21) && vars.checkSplit("a2s_enter_church", "t2s_enter_church");
+        var enterChurch = vars.checkSplit(12, 21, "a2s_enter_church", "t2s_enter_church");
         // Pick up the lens item after getting the key from the jar and opening the door.
-        var isPickUpLensSplit = vars.checkPlaceIds(23, 23) && vars.isInventoryForcedOpen && vars.checkSplit("a2s_pick_up_lens", "t2s_pick_up_lens");
+        var pickUpLens = vars.isInventoryForcedOpen && vars.checkSplit(23, 23, "a2s_pick_up_lens", "t2s_pick_up_lens");
 
         // True Ending - Devotees-Alchemists link 
-        var isDevoAlchSplit = vars.checkPlaceIds(16, 16) && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.shouldSplit("t7s_devo_alch", null);
+        var devoteeAlchemistLink = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.shouldSplit(16, 16, "t7s_devo_alch", null);
 
-        return isFirstJournalSplit || isCryptExitSplit || isHideAndSeekSplit || isPickUpCoinSplit || isEnterChurchSplit || isPickUpLensSplit || isDevoAlchSplit;
+        return firstJournal || cryptExit || hideAndSeek || pickUpCoin || enterChurch || pickUpLens || devoteeAlchemistLink;
     }
 
     // Abbey -> Fortress
