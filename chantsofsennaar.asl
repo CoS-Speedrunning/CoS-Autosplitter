@@ -39,7 +39,7 @@ init
         vars.Helper["inventoryState"] = mono.Make<int>("GameController", "staticInstance", "inventory", "state");
         vars.Helper["isInventoryNeedOpen"] = mono.Make<bool>("GameController", "staticInstance", "inventory", "needOpen");
         // Gets the number of lines solved in the linking terminal.
-        vars.Helper["terminalLinkUIProgress"] = mono.Make<int>("GameController", "staticInstance", "uiController", "terminalUI", "terminalLinkUI", "overed");
+        vars.Helper["terminalProgress"] = mono.Make<int>("GameController", "staticInstance", "uiController", "terminalUI", "terminalLinkUI", "overed");
 
         return true;
     });
@@ -250,7 +250,7 @@ split
         var pickUpLens = vars.isInventoryForcedOpen && vars.CheckSplit(23, 23, "a2s_pick_up_lens", "t2s_pick_up_lens");
 
         // True Ending - Devotee-Alchemist link 
-        var devoteeAlchemistLink = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.CheckSplit(16, 16, "t7s_devo_alch", null);
+        var devoteeAlchemistLink = old.terminalProgress < 5 && current.terminalProgress == 5 && vars.CheckSplit(16, 16, "t7s_devo_alch", null);
 
         return firstJournal || cryptExit || hideAndSeek || pickUpCoin || enterChurch || pickUpLens || devoteeAlchemistLink;
     }
@@ -276,7 +276,7 @@ split
         var armoryExit = vars.CheckSplit(16, 14, "a3s_armory_exit", "t3s_armory_exit");
 
         // True Ending - Warrior-Alchemist link
-        var warriorAlchemistLink = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.CheckSplit(21, 21, "t7s_warr_alch", null);
+        var warriorAlchemistLink = old.terminalProgress < 5 && current.terminalProgress == 5 && vars.CheckSplit(21, 21, "t7s_warr_alch", null);
 
         return spearRoom || stealthStart || stealthCorridor || stealthStorageRoom || armoryExit || warriorAlchemistLink;
     }
@@ -304,7 +304,7 @@ split
         var pickUpTorch = vars.isInventoryForcedOpen && vars.CheckSplit(18, 18, "a4s_pick_up_windmill_torch", "t4s_pick_up_windmill_torch");
 
         // True Ending - Devotee-Bard link
-        var devoteeBardLink = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.CheckSplit(25, 25, "t7s_devo_bard", null);
+        var devoteeBardLink = old.terminalProgress < 5 && current.terminalProgress == 5 && vars.CheckSplit(25, 25, "t7s_devo_bard", null);
 
         return servantDoor || enterSewers || theatreTicket || theatreWatched || exitSewers || pickUpTorch || devoteeBardLink;
     }
@@ -326,7 +326,7 @@ split
         var pickUpSilverBar = vars.isInventoryForcedOpen && vars.CheckSplit(22, 22, "a5s_pick_up_silver_bar", "t5s_pick_up_silver_bar");
 
         // True Ending - Bard-Alchemist split
-        var bardAlchemistSplit = old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.CheckSplit(19, 19, "t7s_bard_alch", null);
+        var bardAlchemistSplit = old.terminalProgress < 5 && current.terminalProgress == 5 && vars.CheckSplit(19, 19, "t7s_bard_alch", null);
 
         return mazeExit || escapeMonster || triggerCanteenTimer || pickUpSilverware || pickUpSilverBar || bardAlchemistSplit;
     }
