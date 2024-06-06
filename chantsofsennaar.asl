@@ -222,14 +222,6 @@ onStart
 
 split
 {
-    /* ---- Testing logic below ---- 
-    // if (vars.currentPlaceId != vars.oldPlaceId)
-    // {
-    //     print("level + place ids: " + vars.oldLevelId + "," + vars.oldPlaceId + " -> " + vars.currentLevelId + "," + vars.currentPlaceId);
-    //     // return true;
-    // }
-       ---- Testing logic above ---- */
-
     // Crypt + Abbey (Devotees) splits
     if (vars.oldLevelId == 0 && vars.currentLevelId == 0)
     {
