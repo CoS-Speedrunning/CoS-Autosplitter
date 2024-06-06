@@ -127,7 +127,7 @@ update
     else
     {
         // No save slot has been selected yet.
-        // print("No save slot selected yet, exiting early.");
+        print("No save slot selected yet, exiting early.");
         return false;
     }
 
