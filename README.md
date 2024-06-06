@@ -1,8 +1,8 @@
 
-# Chants of Sennaar Autosplitter v0.2.0
+# Chants of Sennaar Autosplitter v1.0.0
 
 ## Known bugs
-- Some splits will trigger multiple times during true ending run
+None as of 5th June 2024.
 
 ## How to install
 1. [Download](https://github.com/just-ero/asl-help/raw/main/lib/asl-help) `asl-help` and place it in your LiveSplit installation folder > Components
@@ -15,4 +15,4 @@
 ## Current functionalities
 - Automatic save slot detection
 - Selecting between Any% and True Ending categories
-- Selecting individual splits (reccomended to keep them all on)
+- Selecting individual splits (recommended to keep them all on)
