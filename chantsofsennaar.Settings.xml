@@ -39,7 +39,7 @@
         </Setting>
 
         <Setting Id="a6ss_exile" State="true" Label="Exile (Anchorites) Any% splits">
-            <Setting Id="a6s_exile_npc_room" State="true" Label="Enter the Creator's room" ToolTip="Enter the Creator's room after entering the code in the keypad" />
+            <Setting Id="a6s_creator_room" State="true" Label="Enter the Creator's room" ToolTip="Enter the Creator's room after entering the code in the keypad" />
             <Setting Id="a6s_pick_up_exile_key" State="true" Label="Pick up the Exile key" ToolTip="Pick up the Exile key during the cutscene with the Creator" />
         </Setting>
     </Setting>
@@ -85,7 +85,7 @@
         </Setting>
 
         <Setting Id="t6ss_exile" State="true" Label="Exile (Anchorites) True Ending splits">
-            <Setting Id="t6s_exile_npc_room" State="true" Label="Enter the Creator's room" ToolTip="Enter the Creator's room after entering the code in the keypad" />
+            <Setting Id="t6s_creator_room" State="true" Label="Enter the Creator's room" ToolTip="Enter the Creator's room after entering the code in the keypad" />
             <Setting Id="t6s_pick_up_exile_key" State="true" Label="Pick up the Exile key" ToolTip="Pick up the Exile key during the cutscene with the Creator" />
         </Setting>
 
