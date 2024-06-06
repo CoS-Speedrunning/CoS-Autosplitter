@@ -65,6 +65,32 @@ init
     vars.currentLevelId = -1;
     vars.currentPlaceId = -1;
     vars.currentPortalId = -1;
+
+    // Function checks if we should split, based on provided setting names.
+    // It also uses a dictionary to ensure we don't split again.
+    vars.splitDict = new Dictionary<string, bool>();
+    vars.checkSplit = (Func<string, string, bool>)((settingName1, settingName2) =>
+    {
+        var key = settingName1 + ":" + settingName2;
+        if(!vars.splitDict.ContainsKey(key))
+        {
+            vars.splitDict[key] = false;
+        }
+
+        var checkSetting1 = string.IsNullOrEmpty(settingName1) ? false : settings[settingName1];
+        var checkSetting2 = string.IsNullOrEmpty(settingName2) ? false : settings[settingName2];
+        var shouldSplit = (checkSetting1 || checkSetting2) && !vars.splitDict[key];
+        if (shouldSplit)
+        {
+            vars.splitDict[key] = true;
+        }
+
+        return shouldSplit;
+    });
+
+    // Function checks if old and current place ids match the provided arguments.
+    vars.checkPlaceIds = (Func<int, int, bool>)((oldPlaceIdArg, currentPlaceIdArg) =>
+        vars.oldPlaceId == oldPlaceIdArg && vars.currentPlaceId == currentPlaceIdArg);
 }
 
 update
@@ -97,7 +123,7 @@ update
     else
     {
         // No save slot has been selected yet.
-        print("No save slot selected yet, exiting early.");
+        // print("No save slot selected yet, exiting early.");
         return false;
     }
 
@@ -139,6 +165,8 @@ onReset
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
     vars.isCanteenTimerTriggered = false;
+
+    vars.splitDict = new Dictionary<string, bool>();
 }
 
 start
@@ -186,6 +214,8 @@ onStart
     vars.isInventoryForcedOpenNeeded = false;
     vars.isInventoryForcedOpen = false;
     vars.isCanteenTimerTriggered = false;
+
+    vars.splitDict = new Dictionary<string, bool>();
 }
 
 split
@@ -198,28 +228,27 @@ split
     // }
        ---- Testing logic above ---- */
 
-    /* This only works for Any% category. */
     // Crypt + Abbey (Devotees) splits
     if (vars.oldLevelId == 0 && vars.currentLevelId == 0)
     {
         /* Crypt splits */
         // Finish the 1st journal entry and exit the room.
-        var isFirstJournalSplit = vars.oldPlaceId == 3 && vars.currentPlaceId == 4 && (settings["a1s_first_journal"] || settings["t1s_first_journal"]);
+        var isFirstJournalSplit = vars.checkPlaceIds(3, 4) && vars.checkSplit("a1s_first_journal", "t1s_first_journal");
         // Crypt -> Abbey (finish the water locks puzzle and exit the room)
-        var isCryptExitSplit = vars.oldPlaceId == 5 && vars.currentPlaceId == 6 && (settings["a1s_crypt_exit"] || settings["t1s_crypt_exit"]);
+        var isCryptExitSplit = vars.checkPlaceIds(5, 6) && vars.checkSplit("a1s_crypt_exit", "t1s_crypt_exit");
 
         /* Abbey splits */
         // Finish hide and seek and enter the stealth room.
-        var isHideAndSeekSplit = vars.oldPlaceId == 9 && vars.currentPlaceId == 11 && (settings["a2s_hide_and_seek"] || settings["t2s_hide_and_seek"]);
+        var isHideAndSeekSplit = vars.checkPlaceIds(9, 11) && vars.checkSplit("a2s_hide_and_seek", "t2s_hide_and_seek");
         // Pick up the coin item by finishing the bed puzzle.
-        var isPickUpCoinSplit = vars.currentPlaceId == 17 && vars.isInventoryForcedOpen && (settings["a2s_pick_up_coin"] || settings["t2s_pick_up_coin"]);
+        var isPickUpCoinSplit = vars.checkPlaceIds(17, 17) && vars.isInventoryForcedOpen && vars.checkSplit("a2s_pick_up_coin", "t2s_pick_up_coin");
         // Enter the church.
-        var isEnterChurchSplit = vars.oldPlaceId == 12 && vars.currentPlaceId == 21 && (settings["a2s_enter_church"] || settings["t2s_enter_church"]);
+        var isEnterChurchSplit = vars.checkPlaceIds(12, 21) && vars.checkSplit("a2s_enter_church", "t2s_enter_church");
         // Pick up the lens item after getting the key from the jar and opening the door.
-        var isPickUpLensSplit = vars.currentPlaceId == 23 && vars.isInventoryForcedOpen && (settings["a2s_pick_up_lens"] || settings["t2s_pick_up_lens"]);
+        var isPickUpLensSplit = vars.checkPlaceIds(23, 23) && vars.isInventoryForcedOpen && vars.checkSplit("a2s_pick_up_lens", "t2s_pick_up_lens");
 
-        // True Ending - Devotees - Alchemists link 
-        var isDevoAlchSplit = vars.currentPlaceId == 16 && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && settings["t7s_devo_alch"];
+        // True Ending - Devotees-Alchemists link 
+        var isDevoAlchSplit = vars.checkPlaceIds(16, 16) && old.terminalLinkUIProgress < 5 && current.terminalLinkUIProgress == 5 && vars.shouldSplit("t7s_devo_alch", null);
 
         return isFirstJournalSplit || isCryptExitSplit || isHideAndSeekSplit || isPickUpCoinSplit || isEnterChurchSplit || isPickUpLensSplit || isDevoAlchSplit;
     }
