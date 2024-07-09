@@ -36,12 +36,13 @@ init
         vars.Helper["playerLastMovementDirectionX"] = mono.Make<float>("GameController", "staticInstance", "playerController", "playerMove", "lastMovementDirection");
         vars.Helper["canPlayerRun"] = mono.Make<bool>("GameController", "staticInstance", "playerController", "playerMove", "canRun");
 
+        vars.Helper["journalState"] = mono.Make<int>("GameController", "staticInstance", "journal", "state");
         vars.Helper["inventoryState"] = mono.Make<int>("GameController", "staticInstance", "inventory", "state");
         vars.Helper["isInventoryNeedOpen"] = mono.Make<bool>("GameController", "staticInstance", "inventory", "needOpen");
         // Gets the number of lines solved in the linking terminal.
         vars.Helper["terminalProgress"] = mono.Make<int>("GameController", "staticInstance", "uiController", "terminalUI", "terminalLinkUI", "overed");
 
-        vars.Helper["isGameLoading"] = false; // Insert a pointer here later.
+        vars.Helper["clockTime"] = mono.Make<float>("GameController", "staticInstance", "clockTime");; // If the time stops and we're not in Journal/Inventory, consider that loading
 
         return true;
     });
@@ -159,6 +160,8 @@ update
 
 isLoading
 {
+    print(old.clockTime + " - " + current.clockTime);
+    if (old.clockTime == current.clockTime && current.journalState == 0 && current.inventoryState == 0) return true; // It is absolutely not a good method to do it - occasionally it reads both number's value as the same and pauses the timer for a split second, which accumulates
     return false;
 }
 
