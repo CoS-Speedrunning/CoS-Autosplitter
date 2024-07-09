@@ -41,6 +41,8 @@ init
         // Gets the number of lines solved in the linking terminal.
         vars.Helper["terminalProgress"] = mono.Make<int>("GameController", "staticInstance", "uiController", "terminalUI", "terminalLinkUI", "overed");
 
+        vars.Helper["isGameLoading"] = false; // Insert a pointer here later.
+
         return true;
     });
 
@@ -153,6 +155,11 @@ update
     {
         vars.isInventoryForcedOpenNeeded = true;
     }
+}
+
+isLoading
+{
+    return false;
 }
 
 reset
