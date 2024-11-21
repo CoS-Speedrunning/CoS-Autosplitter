@@ -158,7 +158,10 @@ update
 reset
 {
     // Check if player is on title screen.
-    return current.currentPlacePtr == current.titleScreenPtr;
+    return current.currentPlacePtr == current.titleScreenPtr && 
+        !(vars.oldLevelId == 0 && vars.oldPlaceId == 0) && 
+        vars.currentLevelId == 0 &&
+        vars.currentPlaceId == 0;
 }
 
 onReset
