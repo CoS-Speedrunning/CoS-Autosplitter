@@ -307,7 +307,7 @@ split
     /* Skipping Gardens -> Tunnels split, since we're considering the maze as part of Gardens */
 
     // Gardens -> Maze
-    if (vars.oldLevelId == 2 && vars.currentLevelId == 3 && vars.CheckSplit(null, null,"a3s_maze_entrance", "t3s_maze_entrance"))
+    if (vars.oldLevelId == 2 && vars.currentLevelId == 3 && vars.CheckSplit(null, null,"a4s_maze_entrance", "t4s_maze_entrance"))
     {
         return true;
     }
