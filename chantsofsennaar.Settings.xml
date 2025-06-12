@@ -24,8 +24,6 @@
 
         <Setting Id="a4ss_gardens" State="true" Label="Gardens (Bards) Any% splits">
             <Setting Id="a4s_servant_door" State="true" Label="Exit through the servant's door" />
-            <Setting Id="a4s_enter_sewers" State="true" Label="Enter the sewers" ToolTip="Enter the sewers to get the compass" />
-            <Setting Id="a4s_exit_sewers" State="true" Label="Exit the sewers" ToolTip="Exit the sewers after getting the compass" />
             <Setting Id="a4s_pick_up_windmill_torch" State="true" Label="Pick up the torch at the windmill" />
             <Setting Id="a4s_maze_entrance" State="true" Label="Enter the maze" />
             <Setting Id="a4s_maze_exit" State="true" Label="Exit the maze" ToolTip="Note: the maze is technically part of the Factory level, but we consider it as part of the Gardens level" />
