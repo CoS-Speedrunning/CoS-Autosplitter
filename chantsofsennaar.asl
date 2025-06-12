@@ -287,14 +287,12 @@ split
     {
         // Exit through the servant's door.
         var servantDoor = vars.CheckSplit(2, 5, "a4s_servant_door", "t4s_servant_door");
-        // Enter sewers.
-        var enterSewers = vars.CheckSplit(15, 11, "a4s_enter_sewers", null);
         // Get theatre ticket.
         var theatreTicket = vars.isInventoryForcedOpen && vars.CheckSplit(17, 17, "t4s_theatre_ticket", null);
         // Watch the show.
         var theatreWatched = vars.CheckSplit(23, 24, "t4s_theatre_watched", null);
         // Exit sewers.
-        var exitSewers = vars.CheckSplit(11, 15, "a4s_exit_sewers", "t4s_exit_sewers");
+        var exitSewers = vars.CheckSplit(11, 15, "t4s_exit_sewers", null);
         // Pick up torch item at windmill.
         var pickUpTorch = vars.isInventoryForcedOpen && vars.CheckSplit(18, 18, "a4s_pick_up_windmill_torch", "t4s_pick_up_windmill_torch");
 
