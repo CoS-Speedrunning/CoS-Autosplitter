@@ -299,7 +299,7 @@ split
         // True Ending - Devotee-Bard link
         var devoteeBardLink = old.terminalProgress < 5 && current.terminalProgress == 5 && vars.CheckSplit(25, 25, "t7s_devo_bard", null);
 
-        return servantDoor || enterSewers || theatreTicket || theatreWatched || exitSewers || pickUpTorch || devoteeBardLink;
+        return servantDoor || theatreTicket || theatreWatched || exitSewers || pickUpTorch || devoteeBardLink;
     }
 
     /* Skipping Gardens -> Tunnels split, since we're considering the maze as part of Gardens */
